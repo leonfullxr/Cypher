@@ -1,4 +1,4 @@
-# Cipher
+# Cypher
 ## Description
 Cypher is a cutting-edge encrypted chat application designed to prioritize user privacy and security. With end-to-end encryption, your messages remain confidential and secure, ensuring peace of mind in your communications. We don't store any IP addresses, metadata or user linked data, it is perfectly anonymous.
 
@@ -17,12 +17,12 @@ Cypher is a cutting-edge encrypted chat application designed to prioritize user 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/cypher.git
+   git clone https://github.com/leonfullxr/Cypher.git
    ```
 
 2. Navigate to the project directory:
    ```bash
-   cd cypher
+   cd Cypher
    ```
 
 3. Install dependencies:
