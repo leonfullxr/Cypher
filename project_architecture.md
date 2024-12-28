@@ -1,3 +1,4 @@
+# Project Folder Architecture
 Encrypted-Chat-App/
 │
 ├── client/                     # Frontend (Client-side) code
@@ -50,3 +51,21 @@ Encrypted-Chat-App/
 ├── LICENSE                     # License for the repository
 └── .gitignore                  # Git ignore file
 
+# Architecture Feasibility
+1. Client:
+	Handles local encryption/decryption with private keys.
+	Manages user authentication and session tokens.
+	Generates ephemeral keys for secure sessions.
+
+2. Server:
+	Acts as a relay for encrypted messages.
+	Stores public keys and encrypted messages securely.
+	Facilitates secure key exchange.
+
+3. Database:
+	Stores encrypted private keys, messages, and public keys.
+	Uses encryption at rest and access control mechanisms.
+
+4. Security Layer:
+	Implements Signal Protocol for secure session key generation and management.
+	Uses TLS for communication channels.
