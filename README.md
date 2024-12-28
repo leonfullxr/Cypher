@@ -1,15 +1,15 @@
 # Cipher
 ## Description
-Cypher is a cutting-edge encrypted chat application designed to prioritize user privacy and security. With end-to-end encryption, your messages remain confidential and secure, ensuring peace of mind in your communications.
+Cypher is a cutting-edge encrypted chat application designed to prioritize user privacy and security. With end-to-end encryption, your messages remain confidential and secure, ensuring peace of mind in your communications. We don't store any IP addresses, metadata or user linked data, it is perfectly anonymous.
 
 ---
 
 ## Features
-- **End-to-End Encryption**: Messages are encrypted from sender to receiver, safeguarding your data from prying eyes.
+- **End-to-End Encryption**: Messages are encrypted from sender to receiver, safeguarding your data from prying eyes. Every message stored on the database is encrypted and cannot be read even if the database is breached.
 - **Real-Time Messaging**: Fast and seamless chat experience.
 - **Cross-Platform Support**: Accessible on multiple devices for convenient communication.
 - **Secure Group Chats**: Encrypt conversations with multiple participants.
-- **Minimal Data Storage**: Prioritizes privacy by storing minimal user data.
+- **NO Metadata Storage**: Prioritizes privacy by storing zero user metadata.
 
 ---
 
