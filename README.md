@@ -13,6 +13,37 @@ Cypher is a cutting-edge encrypted chat application designed to prioritize user 
 
 ---
 
+## Architecture Description
+1. Client Side
+
+   1. User Interface (UI): Allows users to send/receive messages and manage contacts.
+   2. Local Key Management: Generates and stores private keys encrypted with the master password.
+   3. Encryption Module: Encrypts outgoing messages using the recipient's public key and decrypts incoming messages with the user's private key.
+   4. TLS Layer: Ensures transport security between client and server.
+
+2. Server Side
+
+   1. Authentication Module:
+      1. Handles user login with master password.
+      2. Validates identity and grants access to stored data.
+   2. Public Key Store: Stores users' public keys securely.
+   3. Message Queue: Temporarily stores encrypted messages until they are retrieved by the recipient.
+   4. Key Exchange Service: Implements Signal Protocol for secure session key negotiation.
+   5. Database: Stores:
+      1. Public keys.
+      2. Encrypted messages (encrypted with recipient’s public key).
+      3. Encrypted private keys (encrypted with master passwords).
+
+3. Database
+   1. Encrypted storage using AES encryption for all data at rest.
+   2. Strict access control policies.
+
+4. Communication Protocol
+   1. TLS: Protects communication between the client and server.
+   2. Signal Protocol: Provides session key exchange and ensures forward secrecy.
+
+---
+
 ## Installation
 
 1. Clone the repository:
