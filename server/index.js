@@ -2,31 +2,36 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const http = require("http");
 
-// Initialize environment variables
-dotenv.config();
+dotenv.config(); // Load environment variables
 
-// Initialize app
-const app = express();
+const app = express(); // Initialize the Express app
 
+// Middleware
+const messageRoutes = require("./routes/messages");
+app.use("/api/messages", messageRoutes);
+app.use(bodyParser.json());
+app.use(express.json()); // Optional: Alternative for parsing JSON payloads
+
+// MongoDB connection
+console.log("MongoDB URI:", process.env.MONGO_URI); // Debug MongoDB URI
+mongoose
+    .connect(process.env.MONGO_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) => console.error("MongoDB connection error:", err));
+
+// Routes
 const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-
-// Basic route for testing
-app.get("/", (req, res) => {
-    res.send("Server is running!");
-});
-
-app.post("/api/test", (req, res) => {
-    const { message } = req.body;
-    res.json({ reply: `Server received: ${message}` });
-});
-
+// Create the HTTP server
+const server = http.createServer(app);
 
 // Start server
-const PORT = process.env.PORT || 9999;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = 9999;
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
