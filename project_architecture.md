@@ -69,3 +69,41 @@ Encrypted-Chat-App/
 4. Security Layer:
 	Implements Signal Protocol for secure session key generation and management.
 	Uses TLS for communication channels.
+
+# Workflow
+    Registration:
+        User generates public/private key pair locally.
+        Public key is sent to the server.
+        Private key is encrypted with the master password and uploaded to the server for recovery purposes.
+
+    Sending a Message:
+        User encrypts the message using the recipient’s public key.
+        Message is sent to the server via a TLS-secured connection.
+        Server stores the encrypted message in the database.
+
+    Receiving a Message:
+        Recipient retrieves the encrypted message from the server.
+        Message is decrypted locally using the recipient's private key.
+
+    Key Exchange:
+        Signal Protocol establishes a session key between the communicating parties.
+        Session keys are used for temporary secure exchanges (e.g., acknowledgments or handshake messages).
+
+## Workflow: Recover Device
+
+    User Initiates Recovery:
+        The user selects the "Recover Device" option in the setup menu.
+        The user is prompted to enter their master password.
+
+    Authentication with Master Password:
+        The master password is used to generate a cryptographic key (via a Key Derivation Function like Argon2 or PBKDF2).
+        The derived key is sent securely (over TLS) to the server to decrypt the user's private key.
+
+    Server Retrieves and Sends Keys and Data:
+        The server retrieves the encrypted private key and encrypted chat history from the database.
+        The private key and chat history are decrypted on the server using the cryptographic key derived from the master password.
+        The server re-encrypts the private key and chat history with a temporary session key (negotiated via Signal Protocol) and sends it to the new device.
+
+    Device Setup:
+        The new device receives the encrypted private key and chat history.
+        The user’s private key and chats are stored locally, with the private key encrypted using the master password.
