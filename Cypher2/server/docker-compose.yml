@@ -1,0 +1,16 @@
+services:
+  db:
+    image: mongo:latest
+    ports:
+      - "27018:27018"
+    container_name: mongodb_cypher
+    volumes:
+      - /data/mongodb_cypher:/data/db
+
+# MongoDB commands
+# 1. mongosh mongodb://localhost:27018
+# 2. show dbs
+# 3. use <db_name>
+# 4. show collections
+# 5. db.<collection_name>.find()
+# 6. db.<collection_name>.find().pretty()
