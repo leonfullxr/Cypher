@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { PiUserCircle } from "react-icons/pi";
 
-const Avatar = ({ userId, name, imageUrl, width, height }) => {
+const Avatar = ({ name, imageUrl, width, height }) => {
     let avatarName = "";
 
     if (name) {
@@ -13,7 +13,7 @@ const Avatar = ({ userId, name, imageUrl, width, height }) => {
         }
     }
 
-    const backgroundColor = [
+    const backgroundColor = useMemo(() => [
         "bg-blue-200",
         "bg-green-200",
         "bg-yellow-200",
@@ -27,12 +27,12 @@ const Avatar = ({ userId, name, imageUrl, width, height }) => {
         "bg-sky-200",
         "bg-amber-200",
         "bg-lime-200",
-        "bg-emerald-200"
-    ];
+        "bg-emerald-200",
+    ], []);
 
     const randomColor = useMemo(() => {
         return backgroundColor[Math.floor(Math.random() * backgroundColor.length)];
-    }, [userId]); // Depend on userId or another unique identifier
+    }, [backgroundColor]);
 
     return (
         <div
