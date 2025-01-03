@@ -56,15 +56,27 @@ Cypher is a cutting-edge encrypted chat application designed to prioritize user 
    cd Cypher
    ```
 
-3. Install dependencies:
+3. Install dependencies and start the server:
    ```bash
+   cd server
    npm install
+   npm run dev
    ```
 
-4. Start the application:
+4. In a new terminal window, navigate to the client directory and start the client:
    ```bash
+   cd ../client
+   npm install
    npm start
    ```
+
+Alternatively, you can use the provided `install.sh` script to automate the installation process:
+
+```bash
+./install.sh
+```
+
+This script will handle the installation and startup of both the server and client.
 
 ---
 
