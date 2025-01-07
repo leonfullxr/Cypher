@@ -1,13 +1,15 @@
 import React, { useMemo } from "react";
 import { PiUserCircle } from "react-icons/pi";
+import { useSelector } from "react-redux";
 
 const Avatar = ({ name, imageUrl, width, height }) => {
+    
     let avatarName = "";
 
     if (name) {
         const nameArray = name?.split(" ");
         if (nameArray.length > 1) {
-            avatarName = nameArray[0][0].toUpperCase() + nameArray[1][0].toUpperCase();
+            avatarName = nameArray[0][0].toUpperCase() + nameArray[1][0]
         } else {
             avatarName = nameArray[0][0].toUpperCase();
         }
@@ -30,33 +32,34 @@ const Avatar = ({ name, imageUrl, width, height }) => {
         "bg-emerald-200",
     ], []);
 
-    const randomColor = useMemo(() => {
-        return backgroundColor[Math.floor(Math.random() * backgroundColor.length)];
-    }, [backgroundColor]);
+    const randomNumber = Math.floor(Math.random() * 9);
 
     return (
         <div
             className="text-slate-800 overflow-hidden rounded-full font-bold relative"
             style={{ width: width + "px", height: height + "px" }}
         >
-            {imageUrl ? (
-                <img
-                    src={imageUrl}
-                    alt={name}
-                    width={width}
-                    height={height}
-                    className="overflow-hidden rounded-full"
-                />
-            ) : name ? (
-                <div
-                    style={{ width: width + "px", height: height + "px" }}
-                    className={`overflow-hidden rounded-full flex justify-center items-center text-lg ${randomColor}`}
-                >
-                    {avatarName}
-                </div>
-            ) : (
-                <PiUserCircle size={width} />
-            )}
+            {
+                imageUrl ? (
+                    <img
+                        src={imageUrl}
+                        width={width}
+                        height={height}
+                        alt={name}
+                        className='overflow-hidden rounded-full'
+                    />
+                ) : (
+                    name ? (
+                        <div  style={{width : width+"px", height : height+"px" }} className={`overflow-hidden rounded-full flex justify-center items-center text-lg ${backgroundColor[randomNumber]}`}>
+                            {avatarName}
+                        </div>
+                    ) :(
+                    <PiUserCircle
+                        size={width}
+                    />
+                    )
+                )
+            }
         </div>
     );
 };
