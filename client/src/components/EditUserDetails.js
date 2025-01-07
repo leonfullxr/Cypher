@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from "react";
 import Avatar from "./Avatar";
-import { uploadPhoto } from "../utils/uploadFile";
+import uploadFile from "../utils/uploadFile";
 import Divider from "./Divider";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/userSlice";
 
 const EditUserDetails = ({onClose, user}) => {
     const [data, setData] = useState({
-        name: user?.user,
+        _id : user?._id,
+        name: user?.name,
         profile_pic: user?.profile_pic
     });
+
+    const uploadPhotoRef = React.useRef();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         setData((preve) => {
             return {
                 ...preve,
-                ...user
+                name: user?.name,
+                profile_pic: user?.profile_pic
             }
         })
     },[user]);
@@ -28,9 +37,15 @@ const EditUserDetails = ({onClose, user}) => {
         });
     }
 
+    const handleOpenUploadPhoto = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        uploadPhotoRef.current.click();
+    }
+
     const handleUploadPhoto = async(e) => {
         const file = e.target.files[0];
-        const uploadPhoto = await uploadPhoto(file);
+        const uploadPhoto = await uploadFile(file);
         setData((preve) => {
             return {
                 ...preve,
@@ -42,10 +57,27 @@ const EditUserDetails = ({onClose, user}) => {
     const handleOnSubmit = async(e) => {
         e.preventDefault();
         e.stopPropagation();
-    }
+        try {
+            const URL = `${process.env.REACT_APP_BACKEND_URL}/api/update-user`;
+            
+            const response = await axios({
+                method : 'post',
+                url : URL,
+                data : data,
+                withCredentials : true
+            });
 
-    const handleSubmit = async() => {
-        console.log("submitting");
+            console.log('response', response);
+            toast.success(response?.data?.message);
+
+            if(response.data.success){
+                dispatch(setUser(response.data.data))
+                onClose();
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error();
+        }
     }
             
     return (
@@ -77,12 +109,13 @@ const EditUserDetails = ({onClose, user}) => {
                                 name={data?.name}
                             />
                             <label htmlFor='profile_pic'>
-                            <button className='font-semibold'>Change Photo</button>
+                            <button className='font-semibold' onClick={handleOpenUploadPhoto}>Change Photo</button>
                             <input
                                 type='file'
                                 id='profile_pic'
                                 className='hidden'
                                 onChange={handleUploadPhoto}
+                                ref={uploadPhotoRef}
                             />
                             </label>
                         </div>
@@ -91,7 +124,7 @@ const EditUserDetails = ({onClose, user}) => {
                     <Divider/>
                     <div className='flex gap-2 w-fit ml-auto '>
                         <button onClick={onClose} className='border-primary border text-primary px-4 py-1 rounded hover:bg-primary hover:text-white'>Cancel</button>
-                        <button onSubmit={handleSubmit} className='border-primary bg-primary text-white border px-4 py-1 rounded hover:bg-secondary'>Save</button>
+                        <button onClick={handleOnSubmit} className='border-primary bg-primary text-white border px-4 py-1 rounded hover:bg-secondary'>Save</button>
                     </div>
                 </form>
             </div>
