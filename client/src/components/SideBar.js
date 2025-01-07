@@ -9,7 +9,7 @@ import EditUserDetails from "./EditUserDetails";
 
 const SideBar = () => {
     const user = useSelector((state) => state?.user);
-    const [editUserOpen, setEditUserOpen] = useState(true);
+    const [editUserOpen, setEditUserOpen] = useState(false);
 
     return (
         <div className="w-full h-full">
@@ -26,11 +26,13 @@ const SideBar = () => {
                         </div>
                     </div>
                     <div className="flex flex-col items-center">
-                        <button className="mx-auto" title={user.name} onClick={()=>setEditUserOpen(true)}>
+                        <button className="mx-auto" title={user?.name} onClick={()=>setEditUserOpen(true)}>
                             <Avatar
                                 width={33}
                                 height={33}
-                                name={user.name}
+                                name={user?.name}
+                                imageUrl={user?.profile_pic}
+                                userId={user?._id}
                             />
                         </button>
                     <button title='logout' className='w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded'>
@@ -42,7 +44,7 @@ const SideBar = () => {
             </div>
             {/* Edit user details */}
             {editUserOpen && (
-                <EditUserDetails onClose={()=>setEditUserOpen(false)} data={user}/>
+                <EditUserDetails onClose={()=>setEditUserOpen(false)} user={user}/>
             )}
         </div>
 
