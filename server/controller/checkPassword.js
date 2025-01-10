@@ -8,6 +8,13 @@ async function checkPassword(request, response){
         
         const user = await UserModel.findById(userId);
 
+        if (!user) {
+            return response.status(404).json({
+                message: 'User not found',
+                error: true,
+            });
+        }        
+
         const verifyPassword = await bcryptjs.compare(password, user.password);
 
         if(!verifyPassword){
@@ -21,7 +28,7 @@ async function checkPassword(request, response){
             id: user._id,
             email: user.email
         }
-        const token = await jwt.sign(tokenData, process.env.JWT_SECRET, {expiresIn: '1d'});
+        const token = await jwt.sign(tokenData, process.env.JWT_SECRET, {expiresIn: '30d'});
 
         const cookiesOptions = {
             httpOnly: true,
