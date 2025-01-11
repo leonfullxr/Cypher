@@ -107,6 +107,22 @@ const MessagePage = () => {
         })
     }
 
+    const handleSendMessage = (e) => {
+        e.preventDefault();
+
+        if (message.text || message.imageUrl || message.videoUrl) {
+            if(socketConnection) {
+                socketConnection.emit('new message', {
+                    sender : user?._id,
+                    receiver : params.userId,
+                    text : message.text,
+                    imageUrl : message.imageUrl,
+                    videoUrl : message.videoUrl
+                })
+            }
+        }
+    }
+
     return (
         <div style={{backgroundImage : `url(${backgroundImage})`}} className="bg-no-repeat bg-cover">
             <header className="sticky top-0 h-16 bg-white flex justify-between items-center px-4">
@@ -237,7 +253,7 @@ const MessagePage = () => {
                 </div>
 
                 {/** Input box **/}
-                <form className="h-full w-full flex gap-2">
+                <form className="h-full w-full flex gap-2" onSubmit={handleSendMessage}>
                     <input
                         type="text"
                         placeholder="Type here..."
@@ -245,7 +261,7 @@ const MessagePage = () => {
                         value={message.text}
                         onChange={hadleOnChange}
                     />
-                    <button>
+                    <button className="text-secondary hover:text-primary">
                         <IoMdSend size={25}/>
                     </button>
                 </form>
