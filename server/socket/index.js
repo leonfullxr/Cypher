@@ -3,6 +3,7 @@ const { Server } = require('socket.io')
 const http = require('http')
 const getUserDetailsFromToken = require('../services/getUserDetailsFromToken')
 const UserModel = require('../models/UserModel')
+const { ConversationModel, MessageModel } = require('../models/ConversationModel')
 
 const app = express()
 
@@ -22,12 +23,14 @@ io.on('connection', async (socket)=>{
 
     const token = socket.handshake.auth.token
 
+    // current user details
     const user = await getUserDetailsFromToken(token)
 
-    socket.join(user?._id)
+    // create a room
+    socket.join(user?._id.toString())
     onlineUser.add(user?._id?.toString())
 
-    io.emit('online-user', Array.from(onlineUser))
+    io.emit('onlineUser', Array.from(onlineUser))
 
     socket.on('message-page', async (userId)=>{
         console.log('userId', userId)
@@ -42,11 +45,81 @@ io.on('connection', async (socket)=>{
         }
 
         socket.emit('message-user', payload)
+
+        // get previous message
+        const getConversationMessage = await ConversationModel.findOne({
+            "$or" : [
+                { sender : user?._id, receiver : userId },
+                { sender : userId, receiver :  user?._id}
+            ]
+        }).populate('message').sort({ updatedAt : -1 })
+
+        socket.emit('message',getConversationMessage?.message || [])
     })
 
     // send message
-    socket.on('new message', (data)=>{
+    socket.on('new message', async(data)=>{
+        // check conversation is available both user
+        let conversation = await ConversationModel.findOne({
+            "$or" : [
+                {
+                    sender : data?.sender, 
+                    receiver : data?.receiver
+                },
+                {
+                    sender : data?.receiver, 
+                    receiver : data?.sender
+                }
+            ]
+        })
+        console.log('conversation', conversation)
+        // if conversation is not available
+        if (!conversation) {
+            const createConversation = await ConversationModel({
+                sender : data?.sender,
+                receiver : data?.receiver,
+                
+            })
+            conversation = await createConversation.save()
+        }
+        const message = new MessageModel({
+            text : data.text,
+            imageUrl : data.imageUrl,
+            videoUrl : data.videoUrl, 
+            msgByUserId : data?.msgByUserId,
+        })
+        const saveMessage = await message.save()
+
         console.log('new message', data)
+        console.log('conversation', conversation)
+        const updateConversation = await ConversationModel.updateOne({ _id : conversation?._id},{
+            $push : {
+                message : saveMessage?._id
+            }
+        })
+
+        const getConversationMessage = await ConversationModel.findOne({
+            "$or" : [
+                {
+                    sender : data?.sender, 
+                    receiver : data?.receiver
+                },
+                {
+                    sender : data?.receiver, 
+                    receiver : data?.sender
+                }
+            ]
+        }).populate('message').sort({updatedAt : -1})
+        
+        io.to(data?.sender).emit('message',getConversationMessage?.message || [])
+        io.to(data?.receiver).emit('message',getConversationMessage?.message || [])
+
+        //send conversation
+        //const conversationSender = await getConversation(data?.sender)
+        //const conversationReceiver = await getConversation(data?.receiver)
+
+        //io.to(data?.sender).emit('conversation',conversationSender)
+        //io.to(data?.receiver).emit('conversation',conversationReceiver)
     })
 
     // disconnect
