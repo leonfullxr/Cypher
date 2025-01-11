@@ -3,7 +3,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { logout, setUser } from "../redux/userSlice";
+import { logout, setSocketConnection, setUser } from "../redux/userSlice";
 import SideBar from "../components/SideBar";
 import logo from "../assets/logo2.png";
 import io from "socket.io-client";
@@ -54,6 +54,8 @@ const Home = () => {
             console.log('online-user', data);
             dispatch(setOnlineUser(data));
         })
+
+        dispatch(setSocketConnection(socketConnection));
 
         return () => {
             socketConnection.disconnect();
