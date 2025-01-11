@@ -188,15 +188,24 @@ const MessagePage = () => {
                         allMessage.map((msg, index) => {
                             return (
                                 <div className={`bg-white p-1 py-1 my-2 rounded w-fit max-w-[280px] md:max-w-sm lg:max-w-md ${user._id === msg.msgByUserId ? "ml-auto bg-teal-100" : ""}`}>
-                                    <div className="w-full">
+                                    <div className='w-full relative'>
                                         {
                                             msg?.imageUrl && (
-                                                <img
-                                                    src={msg?.imageUrl}
-                                                    className="w-full h-full object-scale-down"
-                                                />
-                                            )       
-                                        }       
+                                            <img 
+                                                src={msg?.imageUrl}
+                                                className='w-full h-full object-scale-down'
+                                            />
+                                            )
+                                        }
+                                        {
+                                            msg?.videoUrl && (
+                                            <video
+                                                src={msg.videoUrl}
+                                                className='w-full h-full object-scale-down'
+                                                controls
+                                            />
+                                            )
+                                        }
                                     </div>
                                     <p className="px-2">{msg.text}</p>
                                     <p className="text-xs ml-auto w-fit">{moment(msg.createdAt).format('hh:mm')}</p>
