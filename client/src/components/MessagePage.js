@@ -32,6 +32,7 @@ const MessagePage = () => {
         videoUrl : ""
     });
     const [loading, setLoading] = useState(false);
+    const [allMessage, setAllMessage] = useState([]);
 
     const handleUploadImageVideoOpen = () => {
         setOpenImageVideoUpload(preve => !preve);
@@ -97,6 +98,7 @@ const MessagePage = () => {
 
             socketConnection.on('message', (data)=>{
                 console.log('message', data);
+                setAllMessage(data)
             })
         }
     },[socketConnection,params?.userId,user])
@@ -214,7 +216,18 @@ const MessagePage = () => {
                         </div>
                     )
                 }
-                Show all messages
+                {/** show all messages here **/}
+                <div className="flex flex-col gap-2">
+                    {
+                        allMessage.map((msg, index) => {
+                            return (
+                                <div className="bg-white p-1 py-1 rounded w-fit">
+                                    <p className="px-2">{msg.text}</p>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
             </section>
 
             {/** Send message **/}
