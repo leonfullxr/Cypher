@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -13,6 +13,9 @@ import { IoClose } from "react-icons/io5";
 import Loading from "./Loading";
 import backgroundImage from "../assets/background4-transformed.jpeg";
 import { IoMdSend } from "react-icons/io";
+import moment from "moment";
+
+
 
 const MessagePage = () => {
     const params = useParams();
@@ -33,6 +36,13 @@ const MessagePage = () => {
     });
     const [loading, setLoading] = useState(false);
     const [allMessage, setAllMessage] = useState([]);
+    const currentMessage = useRef(null)
+
+    useEffect(()=>{
+        if(currentMessage.current) {
+            currentMessage.current.scrollIntoView({behavior : 'smooth', block : 'end'})
+        }
+    },[allMessage])
 
     const handleUploadImageVideoOpen = () => {
         setOpenImageVideoUpload(preve => !preve);
@@ -217,12 +227,13 @@ const MessagePage = () => {
                     )
                 }
                 {/** show all messages here **/}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 py-2 mx-2" ref={currentMessage}>
                     {
                         allMessage.map((msg, index) => {
                             return (
-                                <div className="bg-white p-1 py-1 rounded w-fit">
+                                <div className={`bg-white p-1 py-1 my-2 rounded w-fit ${user._id === msg.msgByUserId ? "ml-auto bg-teal-100" : ""}`}>
                                     <p className="px-2">{msg.text}</p>
+                                    <p className="text-xs ml-auto w-fit">{moment(msg.createdAt).format('hh:mm')}</p>
                                 </div>
                             )
                         })
