@@ -122,6 +122,33 @@ io.on('connection', async (socket)=>{
         //io.to(data?.receiver).emit('conversation',conversationReceiver)
     })
 
+    // sidebar
+    socket.on('sidebar', async(currentUserId)=>{
+        console.log('current user', currentUserId)
+
+        if(currentUserId) {
+            const currentUserConversation = await ConversationModel.find({
+                $or : [
+                    { sender : currentUserId },
+                    { receiver : currentUserId }
+                ]
+            }).sort({ updatedAt : -1 }).populate('message').populate('sender').populate('receiver')
+    
+            const conversation = currentUserConversation.map((conv)=>{
+                const countUnseenMsg = conv?.message.reduce((preve,curr) => preve + (curr.seen ? 0 : 1),0)
+                return {
+                    _id : conv?._id,
+                    sender : conv?.sender,
+                    receiver : conv?.receiver,
+                    unseenMessage : "",
+                    lastMsg : conv?.message[conv?.message.length - 1]
+                }
+            })
+    
+            socket.emit('conversation', conversation)
+        }
+    })
+
     // disconnect
     socket.on('disconnect',()=>{
         onlineUser.delete(user?._id)
