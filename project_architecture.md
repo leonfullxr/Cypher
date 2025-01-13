@@ -107,3 +107,107 @@ Encrypted-Chat-App/
     Device Setup:
         The new device receives the encrypted private key and chat history.
         The user’s private key and chats are stored locally, with the private key encrypted using the master password.
+
+## Workflow: Sending A Message 
+#### **1. Message Encryption and Signing (Sender Side)**
+- **Steps**:
+  1. The sender (Alice) **signs** the message with her **private identity key**. This creates a digital signature, proving the message originated from Alice.
+  2. Alice **encrypts** the signed message with the recipient's (Bob's) **public identity key**. This ensures only Bob can decrypt the message.
+
+  **Purpose**:
+  - The signature ensures **authenticity** (the message is from Alice).
+  - The encryption ensures **confidentiality** (only Bob can read the message).
+
+- **Why?**: Encrypting with Bob's public key prevents even the server from reading the message because only Bob has the private key needed to decrypt it.
+
+---
+
+#### **2. Message Transmission (Server Side)**
+- **Steps**:
+  1. Alice sends the encrypted message and the signature to the server.
+  2. The server **does not decrypt or tamper** with the message—it simply forwards it to Bob.
+
+  **Purpose**:
+  - The server acts as a relay for encrypted messages without having access to their content.
+
+- **Why?**: If the server is hacked, the attacker cannot read the messages since they are encrypted with Bob's public key.
+
+---
+
+#### **3. Message Decryption and Verification (Recipient Side)**
+- **Steps**:
+  1. Bob receives the encrypted message and decrypts it with his **private identity key** to reveal the signed plaintext message.
+  2. Bob verifies the signature using Alice's **public identity key** to ensure:
+     - The message was sent by Alice.
+     - The message has not been tampered with during transmission.
+
+  **Purpose**:
+  - Decryption ensures **confidentiality**.
+  - Signature verification ensures **authenticity** and **integrity**.
+
+---
+
+### **Refined Workflow Example**
+
+#### **Alice Sending a Message to Bob**
+1. **Alice signs the message**:
+   - Message: `"Hello, Bob!"`
+   - Signature: `Sign("Hello, Bob!", Alice's Private Key)`
+
+2. **Alice encrypts the message and signature**:
+   - Encrypted Payload: `Encrypt({message, signature}, Bob's Public Key)`
+
+3. **Alice sends the encrypted payload** to the server:
+   - Payload: `{to: "Bob", encryptedMessage}`
+
+---
+
+#### **Server Relaying the Message**
+- The server forwards `{to: "Bob", encryptedMessage}` to Bob without attempting to decrypt it.
+
+---
+
+#### **Bob Receiving the Message**
+1. **Bob decrypts the payload** using his **private key**:
+   - Decrypted Payload: `{message: "Hello, Bob!", signature}`
+
+2. **Bob verifies the signature**:
+   - `Verify("Hello, Bob!", signature, Alice's Public Key)`
+
+3. If the signature is valid:
+   - Bob is assured the message came from Alice and was not tampered with.
+
+---
+
+### **Why This Architecture is Secure**
+1. **Confidentiality**:
+   - Messages are encrypted with Bob's public key, so only Bob (with his private key) can decrypt them.
+   - Even if the server is compromised, attackers cannot decrypt messages.
+
+2. **Authenticity**:
+   - Messages are signed with Alice's private key.
+   - Bob can verify the sender is Alice by checking the signature with Alice's public key.
+
+3. **Integrity**:
+   - The signature also ensures that the message has not been modified during transmission.
+
+---
+
+### **Potential Enhancements**
+1. **Session Encryption (Signal Protocol)**
+   - Instead of encrypting every message directly with public keys, establish a **secure session** between Alice and Bob using the Signal Protocol's **Double Ratchet Algorithm**.
+   - Benefits:
+     - Adds **perfect forward secrecy**: even if private keys are compromised, past messages remain secure.
+     - More efficient encryption for long conversations (reuses session keys).
+
+2. **Out-of-Band Key Verification**
+   - Ensure Alice and Bob verify each other's public keys via a secure channel (e.g., QR codes or fingerprint comparison) to prevent man-in-the-middle attacks.
+
+---
+
+### **Conclusion**
+Your proposed architecture is correct and secure:
+- **Encrypt the message with the recipient's public key**.
+- **Sign the message with the sender's private key**.
+- **Forward encrypted messages without server decryption**.
+- **Decrypt and verify authenticity on the recipient's side**.
