@@ -91,8 +91,8 @@ io.on('connection', async (socket)=>{
         })
         const saveMessage = await message.save()
 
-        console.log('new message', data)
-        console.log('conversation', conversation)
+        //console.log('new message', data)
+        //console.log('conversation', conversation)
         const updateConversation = await ConversationModel.updateOne({ _id : conversation?._id},{
             $push : {
                 message : saveMessage?._id
@@ -131,9 +131,37 @@ io.on('connection', async (socket)=>{
         socket.emit('conversation', conversation)    
     })
 
+    // seen message, to update the 'seen' status of the message
+    socket.on('seen', async (msgByUserId)=>{
+        let conversation = await ConversationModel.findOne({
+            "$or" : [
+                {
+                    sender : user?._id,
+                    receiver : msgByUserId
+                },
+                {
+                    sender : msgByUserId,
+                    receiver : user?._id
+                }
+            ]
+        }) 
+        const conversationMessageId = conversation?.message || []
+        const updateMessages = await MessageModel.updateMany(
+            {_id : { $in : conversationMessageId }, msgByUserId : msgByUserId},
+            { $set : { seen : true } }
+        )
+
+        // send conversation
+        const conversationSender = await getConversation(user?._id.toString())
+        const conversationReceiver = await getConversation(msgByUserId)
+
+        io.to(user?._id.toString()).emit('conversation',conversationSender)
+        io.to(msgByUserId).emit('conversation',conversationReceiver)
+    })
+
     // disconnect
     socket.on('disconnect',()=>{
-        onlineUser.delete(user?._id)
+        onlineUser.delete(user?._id?.toString())
         console.log('disconnect user', socket.id)
     })
 })
