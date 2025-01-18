@@ -48,19 +48,19 @@ const MessagePage = () => {
         setOpenImageVideoUpload(preve => !preve);
     }
 
-    const handleUploadImage = async (e) => {
-        const file = e.target.files[0];
-        
-        setLoading(true);
-        const uploadPhoto = await uploadFile(file);
-        setLoading(false);
-        setOpenImageVideoUpload(false);
-
+    const handleUploadImage = async(e)=>{
+        const file = e.target.files[0]
+    
+        setLoading(true)
+        const uploadPhoto = await uploadFile(file)
+        setLoading(false)
+        setOpenImageVideoUpload(false)
+    
         setMessage(preve => {
-            return {
-                ...preve,
-                imageUrl : uploadPhoto.url
-            }
+          return{
+            ...preve,
+            imageUrl : uploadPhoto.url
+          }
         })
     }
 
@@ -73,27 +73,27 @@ const MessagePage = () => {
         })
     }
 
-    const handleUploadVideo = async (e) => {
-        const file = e.target.files[0];
-
-        setLoading(true);
-        const uploadPhoto = await uploadFile(file);
-        setLoading(false);
-        setOpenImageVideoUpload(false);
-
+    const handleUploadVideo = async(e)=>{
+        const file = e.target.files[0]
+    
+        setLoading(true)
+        const uploadPhoto = await uploadFile(file)
+        setLoading(false)
+        setOpenImageVideoUpload(false)
+    
         setMessage(preve => {
-            return {
-                ...preve,
-                videoUrl : uploadPhoto.url
-            }
+          return{
+            ...preve,
+            videoUrl : uploadPhoto.url
+          }
         })
     }
-
-    const handleClearUploadVideo = () => {
+    
+    const handleClearUploadVideo = ()=>{
         setMessage(preve => {
-            return {
-                ...preve,
-                videoUrl : ""
+            return{
+            ...preve,
+            videoUrl : ""
             }
         })
     }
