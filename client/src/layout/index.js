@@ -4,7 +4,7 @@ import logo from "../assets/logo2.png";
 const AuthLayouts = ({children}) => {
   return (
     <>
-      <header className='flex justify-center items-center py-3 h-20 shadow-md bg-white'>
+      <header className='flex justify-center items-center py-1 h-21 shadow-md bg-white'>
           <img 
             src={logo}
             alt='logo'
