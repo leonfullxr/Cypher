@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import { FaUserPlus } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { BiLogOut } from "react-icons/bi";
 import Avatar from "./Avatar";
 import { useSelector } from "react-redux";
@@ -105,7 +105,7 @@ const SideBar = () => {
                     {
                         allUsers.map((conv,index)=>{
                             return(
-                                <div key={conv?._id} className="flex items-center gap-2">
+                                <NavLink to={"/"+conv?.userDetails?._id} key={conv?._id} className="flex items-center gap-2 py-3 px-2 border border-transparent hover:border-primary rounded hover:bg-slate-100 cursor-pointer">
                                     <div>
                                         <Avatar
                                             imageUrl={conv?.userDetails?.profile_pic}
@@ -136,9 +136,10 @@ const SideBar = () => {
                                                 }
                                             </div>
                                             <p className='text-ellipsis line-clamp-1'>{conv?.lastMsg?.text}</p>
+                                            {/* <p className="text-xs w-6 h-6 flex justify-center ml-auto p-1 bg-primary text-white font-semibold rounded">{conv?.lastMsg?.text}</p> */}
                                         </div>
                                     </div>
-                                </div>
+                                </NavLink>
                             )
                         })
                     }
