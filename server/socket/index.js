@@ -147,8 +147,8 @@ io.on('connection', async (socket)=>{
         }) 
         const conversationMessageId = conversation?.message || []
         const updateMessages = await MessageModel.updateMany(
-            {_id : { $in : conversationMessageId }, msgByUserId : msgByUserId},
-            { $set : { seen : true } }
+            {_id : { "$in" : conversationMessageId }, msgByUserId : msgByUserId},
+            { "$set" : { seen : true } }
         )
 
         // send conversation
