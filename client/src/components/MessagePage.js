@@ -15,8 +15,6 @@ import backgroundImage from "../assets/background4-transformed.jpeg";
 import { IoMdSend } from "react-icons/io";
 import moment from "moment";
 
-
-
 const MessagePage = () => {
     const params = useParams();
     const socketConnection = useSelector(state => state?.user?.socketConnection);
@@ -101,6 +99,9 @@ const MessagePage = () => {
     useEffect(()=>{
         if(socketConnection){
             socketConnection.emit('message-page', params.userId)
+            
+            socketConnection.emit('seen', params.userId)
+
             socketConnection.on('message-user', (data)=>{
                 //console.log('user-details', data);
                 setDataUser(data);
@@ -187,7 +188,7 @@ const MessagePage = () => {
                     {
                         allMessage.map((msg, index) => {
                             return (
-                                <div className={`bg-white p-1 py-1 my-2 rounded w-fit max-w-[280px] md:max-w-sm lg:max-w-md ${user._id === msg.msgByUserId ? "ml-auto bg-teal-100" : ""}`}>
+                                <div className={`p-1 py-1 my-2 rounded w-fit max-w-[280px] md:max-w-sm lg:max-w-md ${user._id === msg?.msgByUserId ? "ml-auto bg-teal-100" : "bg-white"}`}>
                                     <div className='w-full relative'>
                                         {
                                             msg?.imageUrl && (
