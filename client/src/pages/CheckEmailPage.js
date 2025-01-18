@@ -72,7 +72,7 @@ const CheckEmailPage = () => {
                     </div>
 
                     <button className="bg-secondary txt-lg px-4 py-1 hover:bg-primary rounded mt-2 font-bold text-white leading-relaxed tracking-wide">
-                        Register
+                        Login
                     </button>
                 </form>
 
