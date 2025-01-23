@@ -17,6 +17,12 @@ const io = new Server(server, {
     }
 })
 
+const { 
+    SignalClient, 
+    PreKeyBundle, 
+    ProtocolAddress 
+  } = require('@signalapp/libsignal-client');
+
 const onlineUser = new Set()
 
 io.on('connection', async (socket)=>{
@@ -79,49 +85,31 @@ io.on('connection', async (socket)=>{
             const createConversation = await ConversationModel({
                 sender : data?.sender,
                 receiver : data?.receiver,
+                messages : [],
                 
             })
             conversation = await createConversation.save()
         }
+        // 3. Append the new encrypted message
+        //    (Client is responsible for encryption + signing)
         const message = new MessageModel({
-            text : data.text,
-            imageUrl : data.imageUrl,
-            videoUrl : data.videoUrl, 
-            msgByUserId : data?.msgByUserId,
-        })
-        const saveMessage = await message.save()
+            cipherText: encryptedData.cipherText,
+            messageType: encryptedData.messageType,
+            msgByUserId: encryptedData.msgByUserId,
+          });
 
-        //console.log('new message', data)
-        //console.log('conversation', conversation)
-        const updateConversation = await ConversationModel.updateOne({ _id : conversation?._id},{
-            $push : {
-                message : saveMessage?._id
-            }
-        })
+        await message.save();
 
-        const getConversationMessage = await ConversationModel.findOne({
-            "$or" : [
-                {
-                    sender : data?.sender, 
-                    receiver : data?.receiver
-                },
-                {
-                    sender : data?.receiver, 
-                    receiver : data?.sender
-                }
-            ]
-        }).populate('message').sort({updatedAt : -1})
-        
-        io.to(data?.sender).emit('message',getConversationMessage?.message || [])
-        io.to(data?.receiver).emit('message',getConversationMessage?.message || [])
+        // 4. Emit updated conversation messages to both parties
+        io.to(data.sender).emit('message', conversation.messages);
+        io.to(data.receiver).emit('message', conversation.messages);
 
-        //send conversation
-        // this is to refresh the 'last message' in the sidebar
-        const conversationSender = await getConversation(data?.sender)
-        const conversationReceiver = await getConversation(data?.receiver)
+        // 5. (Optional) Refresh conversation sidebars
+        const conversationSender = await getConversation(data.sender);
+        const conversationReceiver = await getConversation(data.receiver);
 
-        io.to(data?.sender).emit('conversation',conversationSender)
-        io.to(data?.receiver).emit('conversation',conversationReceiver)
+        io.to(data.sender).emit('conversation', conversationSender);
+        io.to(data.receiver).emit('conversation', conversationReceiver);
     })
 
     // sidebar

@@ -6,6 +6,7 @@ const userDetails = require('../controller/userDetails');
 const logout = require('../controller/logout');
 const updateUserDetails = require('../controller/updateUserDetails');
 const searchUser = require('../controller/searchUser');
+const getUserKeys = require('../controller/getUserKeys');
 
 const router = express.Router();
 
@@ -23,5 +24,7 @@ router.get('/logout', logout);
 router.post('/update-user', updateUserDetails);
 // search user
 router.post('/search-user', searchUser);
+// get user keys
+router.get('/keys/:userId', getUserKeys);
 
 module.exports = router;

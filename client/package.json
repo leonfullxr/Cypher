@@ -4,11 +4,20 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",
+    "@signalapp/libsignal-client": "^0.65.3",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.9",
+    "buffer": "^6.0.3",
+    "console-browserify": "^1.2.0",
+    "crypto-browserify": "^3.12.0",
+    "localforage": "^1.10.0",
     "moment": "^2.30.1",
+    "node-polyfill-webpack-plugin": "^2.0.1",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-hot-toast": "^2.5.1",
@@ -17,12 +26,14 @@
     "react-router-dom": "^7.1.1",
     "react-scripts": "5.0.1",
     "socket.io-client": "^4.8.1",
-    "web-vitals": "^2.1.4"
+    "stream-browserify": "^3.0.0",
+    "vm-browserify": "^1.1.2",
+    "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "start": "PORT=9999 react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "PORT=9999 craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -44,7 +55,12 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@craco/craco": "^7.1.0",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "ajv": "^7.2.4",
-    "tailwindcss": "^3.4.17"
+    "react-app-rewired": "^2.2.1",
+    "tailwindcss": "^3.4.17",
+    "webpack": "^5.89.0"
   }
 }

@@ -14,12 +14,14 @@ import Loading from "./Loading";
 import backgroundImage from "../assets/background4-transformed.jpeg";
 import { IoMdSend } from "react-icons/io";
 import moment from "moment";
+import SignalWrapper from "../lib/signal";
 
 const MessagePage = () => {
     const params = useParams();
     const socketConnection = useSelector(state => state?.user?.socketConnection);
     const user = useSelector(state => state?.user);
-    const [dataUser, setDataUser] = useState({
+    const [signalClient, setSignalClient] = useState(null);
+    const [dataUser] = useState({
         name : "",
         email : "",
         profile_pic : "",
@@ -40,7 +42,12 @@ const MessagePage = () => {
         if(currentMessage.current) {
             currentMessage.current.scrollIntoView({behavior : 'smooth', block : 'end'})
         }
-    },[allMessage])
+        if(user?._id) {
+            const client = new SignalWrapper(user._id);
+            client.initialize();
+            setSignalClient(client);
+        }
+    },[allMessage, user?._id])
 
     const handleUploadImageVideoOpen = () => {
         setOpenImageVideoUpload(preve => !preve);
@@ -96,26 +103,35 @@ const MessagePage = () => {
         })
     }
 
-    useEffect(()=>{
-        if(socketConnection){
-            socketConnection.emit('message-page', params.userId)
-            
-            socketConnection.emit('seen', params.userId)
+    useEffect(() => {
+        const decryptMessages = async () => {
+            if(signalClient && allMessage.length > 0) {
+                const decryptedMessages = await Promise.all(
+                    allMessage.map(async (msg) => {
+                        try {
+                            const decrypted = await signalClient.decryptMessage({
+                                cipherText: msg.cipherText,
+                                senderId: msg.msgByUserId
+                            });
+                            return { 
+                                ...msg, 
+                                ...JSON.parse(decrypted) 
+                            };
+                        } catch (error) {
+                            console.error('Decryption error:', error);
+                            return msg;
+                        }
+                    })
+                );
+                setAllMessage(decryptedMessages);
+            }
+        };
 
-            socketConnection.on('message-user', (data)=>{
-                //console.log('user-details', data);
-                setDataUser(data);
-            })
-
-            socketConnection.on('message', (data)=>{
-                console.log('message', data);
-                setAllMessage(data)
-            })
-        }
-    },[socketConnection,params?.userId,user])
+        decryptMessages();
+    }, [allMessage, signalClient]);
 
     const hadleOnChange = (e) => {
-        const {name, value} = e.target;
+        const {value} = e.target;
         setMessage(preve => {
             return {
                 ...preve,
@@ -124,27 +140,37 @@ const MessagePage = () => {
         })
     }
 
-    const handleSendMessage = (e) => {
+    const handleSendMessage = async (e) => {
         e.preventDefault();
 
-        if (message.text || message.imageUrl || message.videoUrl) {
-            if(socketConnection) {
-                socketConnection.emit('new message', {
-                    sender : user?._id,
-                    receiver : params.userId,
-                    text : message.text,
-                    imageUrl : message.imageUrl,
-                    videoUrl : message.videoUrl,
-                    msgByUserId : user?._id
-                })
-                setMessage({
-                    text : "",
-                    imageUrl : "",
-                    videoUrl : ""
-                })
+        if ((message.text || message.imageUrl || message.videoUrl) && signalClient) {
+            try {
+                // Encrypt message content
+                const encrypted = await signalClient.encryptMessage(
+                    params.userId,
+                    JSON.stringify({
+                        text: message.text,
+                        imageUrl: message.imageUrl,
+                        videoUrl: message.videoUrl
+                    })
+                );
+
+                if(socketConnection) {
+                    socketConnection.emit('new message', {
+                        sender: user?._id,
+                        receiver: params.userId,
+                        cipherText: encrypted.cipherText,
+                        messageType: encrypted.messageType,
+                        msgByUserId: user?._id
+                    });
+                    
+                    setMessage({ text: "", imageUrl: "", videoUrl: "" });
+                }
+            } catch (error) {
+                console.error('Encryption error:', error);
             }
         }
-    }
+    };
 
     return (
         <div style={{backgroundImage : `url(${backgroundImage})`}} className="bg-no-repeat bg-cover">

@@ -1,56 +1,47 @@
+// server/models/ConversationModel.js
+
 const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema({
-    text : {
-        type: String,
-        default: ''
-    },
-    imageUrl : {
-        type: String,
-        default: ''
-    },
-    videoUrl : {
-        type : String,
-        default : ""
-    },
-    seen : {
-        type: Boolean,
-        default: false
-    },
-    msgByUserId : {
-        type: mongoose.Schema.ObjectId,
-        required: true,
-        ref : 'User'
-    }
+  cipherText: {
+    type: String,
+    required: true
+  },
+  messageType: {
+    type: String,
+    enum: ['prekey', 'ciphertext'],
+    required: true
+  },
+  msgByUserId: {
+    type: mongoose.Schema.ObjectId,
+    required: true,
+    ref: 'User',
+  },
+  seen: {
+    type: Boolean,
+    default: false,
+  },
 }, {
-    timestamps: true
+  timestamps: true,
 });
 
 const conversationSchema = new mongoose.Schema({
-    sender : {
-        type: mongoose.Schema.ObjectId,
-        required: true,
-        ref : 'User'
-    },
-    receiver : {
-        type: mongoose.Schema.ObjectId,
-        required: true,
-        ref : 'User'
-    },
-    message : [
-        {
-            type: mongoose.Schema.ObjectId,
-            ref : 'Message'
-        }
-    ]
+  sender: {
+    type: mongoose.Schema.ObjectId,
+    required: true,
+    ref: 'User',
+  },
+  receiver: {
+    type: mongoose.Schema.ObjectId,
+    required: true,
+    ref: 'User',
+  },
+  messages: [  // Embed message documents in conversation for simplicity
+    messageSchema,
+  ],
 }, {
-    timestamps: true
+  timestamps: true,
 });
 
-const MessageModel = mongoose.model('Message', messageSchema);
 const ConversationModel = mongoose.model('Conversation', conversationSchema);
-
-module.exports = { 
-    MessageModel, 
-    ConversationModel 
-};
+module.exports = { ConversationModel };
