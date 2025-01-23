@@ -17,8 +17,10 @@ window.Buffer = Buffer;
 window.process = process;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+// Add a temporary test component
 root.render(
   <React.StrictMode>
+    <h1 style={{color: 'red'}}>TEST RENDER - CHECK IF THIS APPEARS</h1>
     <Provider store={store}>
       <RouterProvider router={router}>
         <App />

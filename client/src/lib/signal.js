@@ -17,6 +17,7 @@ class SignalWrapper {
   }
 
   async initialize() {
+    console.log('Initializing Signal client for user:', this.userId);
     if (!await this.store.hasIdentity()) {
       await this.generateKeys();
     }

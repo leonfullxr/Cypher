@@ -14,6 +14,10 @@ const router = createBrowserRouter([
         element : <App/>,
         children : [
             {
+                path: "/test",
+                element: <div>TEST ROUTE</div>
+            },
+            {
                 path : "register",
                 element : <AuthLayouts><RegisterPage/></AuthLayouts>
             },
