@@ -18,6 +18,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    publicKey: {
+        type: String,
+        required: [true, 'Public key is required']
+    },
+    encryptedPrivateKey: {
+        type: String,
+        required: [true, 'Encrypted private key is required']
+    },
 }, { 
     timestamps: true 
 });
