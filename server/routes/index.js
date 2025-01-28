@@ -6,6 +6,7 @@ const userDetails = require('../controller/userDetails');
 const logout = require('../controller/logout');
 const updateUserDetails = require('../controller/updateUserDetails');
 const searchUser = require('../controller/searchUser');
+const getPublicKey = require('../controller/getPublicKey');
 
 const router = express.Router();
 
