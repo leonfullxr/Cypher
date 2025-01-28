@@ -23,5 +23,7 @@ router.get('/logout', logout);
 router.post('/update-user', updateUserDetails);
 // search user
 router.post('/search-user', searchUser);
+// Get public key
+router.get('/get-public-key', getPublicKey);
 
 module.exports = router;
