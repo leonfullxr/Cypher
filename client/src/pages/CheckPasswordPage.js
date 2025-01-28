@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Avatar from "../components/Avatar";
 import { useDispatch } from "react-redux";
 import { setToken } from "../redux/userSlice";
+import CryptoJS from "crypto-js";
 
 const CheckPasswordPage = () => {
     const [data, setData] = useState({
