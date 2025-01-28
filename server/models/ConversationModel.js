@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema({
-    text : {
+    textForRecipient: {
         type: String,
-        default: ''
+    },
+    textForSender: {
+        type: String,
     },
     imageUrl : {
         type: String,
