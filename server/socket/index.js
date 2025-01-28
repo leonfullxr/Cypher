@@ -58,71 +58,61 @@ io.on('connection', async (socket)=>{
         socket.emit('message',getConversationMessage?.message || [])
     })
 
-    // send message
-    socket.on('new message', async(data)=>{
-        // check conversation is available both user
+    // send new message
+    socket.on('new message', async (data) => {
+        // 1) If conversation doesn't exist, create it:
         let conversation = await ConversationModel.findOne({
-            "$or" : [
-                {
-                    sender : data?.sender, 
-                    receiver : data?.receiver
-                },
-                {
-                    sender : data?.receiver, 
-                    receiver : data?.sender
-                }
-            ]
-        })
-        console.log('conversation', conversation)
-        // if conversation is not available
+        "$or": [
+            { sender: data.sender, receiver: data.receiver },
+            { sender: data.receiver, receiver: data.sender }
+        ]
+        });
+    
         if (!conversation) {
-            const createConversation = await ConversationModel({
-                sender : data?.sender,
-                receiver : data?.receiver,
-                
-            })
-            conversation = await createConversation.save()
+        const createConversation = new ConversationModel({
+            sender: data.sender,
+            receiver: data.receiver,
+        });
+        conversation = await createConversation.save();
         }
+    
+        // 2) Create the message with two encrypted fields:
         const message = new MessageModel({
-            text : data.text,
-            imageUrl : data.imageUrl,
-            videoUrl : data.videoUrl, 
-            msgByUserId : data?.msgByUserId,
-        })
-        const saveMessage = await message.save()
-
-        //console.log('new message', data)
-        //console.log('conversation', conversation)
-        const updateConversation = await ConversationModel.updateOne({ _id : conversation?._id},{
-            $push : {
-                message : saveMessage?._id
-            }
-        })
-
+        textForRecipient: data.textForRecipient, // <-- encrypted for recipient
+        textForSender: data.textForSender,       // <-- encrypted for sender
+        imageUrl: data.imageUrl,
+        videoUrl: data.videoUrl,
+        msgByUserId: data.msgByUserId,
+        });
+        const saveMessage = await message.save();
+    
+        // Add the new message to the conversation
+        await ConversationModel.updateOne({ _id: conversation._id }, {
+        $push: {
+            message: saveMessage._id
+        }
+        });
+    
+        // Re-fetch the conversation with all messages
         const getConversationMessage = await ConversationModel.findOne({
-            "$or" : [
-                {
-                    sender : data?.sender, 
-                    receiver : data?.receiver
-                },
-                {
-                    sender : data?.receiver, 
-                    receiver : data?.sender
-                }
-            ]
-        }).populate('message').sort({updatedAt : -1})
-        
-        io.to(data?.sender).emit('message',getConversationMessage?.message || [])
-        io.to(data?.receiver).emit('message',getConversationMessage?.message || [])
-
-        //send conversation
-        // this is to refresh the 'last message' in the sidebar
-        const conversationSender = await getConversation(data?.sender)
-        const conversationReceiver = await getConversation(data?.receiver)
-
-        io.to(data?.sender).emit('conversation',conversationSender)
-        io.to(data?.receiver).emit('conversation',conversationReceiver)
-    })
+        "$or": [
+            { sender: data.sender, receiver: data.receiver },
+            { sender: data.receiver, receiver: data.sender }
+        ]
+        }).populate('message').sort({ updatedAt: -1 });
+    
+        // Emit the message list to both users
+        io.to(data.sender).emit('message', getConversationMessage?.message || []);
+        io.to(data.receiver).emit('message', getConversationMessage?.message || []);
+    
+        // Send the updated conversation (to refresh the 'last message' in the sidebar)
+        const conversationSender = await getConversation(data.sender);
+        const conversationReceiver = await getConversation(data.receiver);
+    
+        io.to(data.sender).emit('conversation', conversationSender);
+        io.to(data.receiver).emit('conversation', conversationReceiver);
+    });
+  
 
     // sidebar
     socket.on('sidebar', async(currentUserId)=>{
