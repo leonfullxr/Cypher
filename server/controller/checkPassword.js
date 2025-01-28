@@ -38,6 +38,7 @@ async function checkPassword(request, response){
         return response.cookie('token', token, cookiesOptions).status(200).json({
             message: 'Password verified, login successful',
             token : token,
+            encryptedPrivateKey: user.encryptedPrivateKey,
             success: true
         });
 

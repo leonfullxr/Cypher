@@ -53,6 +53,13 @@ const CheckPasswordPage = () => {
             if(response.data.success){
                 dispatch(setToken(response?.data?.token))
                 localStorage.setItem('token',response?.data?.token)
+                
+                // Decrypt private key using password
+                const bytes = CryptoJS.AES.decrypt(response?.data?.encryptedPrivateKey, data.password);
+                const privateKey = bytes.toString(CryptoJS.enc.Utf8);
+
+                const userId = location?.state?._id;
+                localStorage.setItem("privateKey", privateKey);
     
                 setData({
                   password : "",
