@@ -11,6 +11,7 @@ import SearchUser from "./SearchUser";
 import { FaImage } from "react-icons/fa";
 import { FaVideo } from "react-icons/fa";
 import { logout } from "../redux/userSlice";
+import { JSEncrypt } from "jsencrypt";
 
 const SideBar = () => {
     const user = useSelector((state) => state?.user);
@@ -22,36 +23,75 @@ const SideBar = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(socketConnection) {
-            socketConnection.emit('sidebar',user?._id);
-
-            socketConnection.on('conversation', (data) => {
-                console.log('conversation', data)
-                
-                const conversationUserData = data.map((conversationUser,index)=>{
-                    if(conversationUser?.sender?._id === conversationUser?.receiver?._id) {
-                        return{
-                            ...conversationUser,
-                            userDetails : conversationUser?.sender   
-                        }
-                    }
-
-                    else if(conversationUser?.receiver?._id !== user?._id) {
-                        return{
-                            ...conversationUser,
-                            userDetails : conversationUser.receiver
-                        }
-                    } else {
-                        return{
-                            ...conversationUser,
-                            userDetails : conversationUser.sender
-                        }
-                    }
-                })
-                setAllUsers(conversationUserData);
-            })
+        if (socketConnection) {
+          socketConnection.emit("sidebar", user?._id);
+      
+          socketConnection.on("conversation", (data) => {
+            console.log("conversation", data);
+      
+            const localPrivateKey = localStorage.getItem("privateKey") || "";
+            const decryptor = new JSEncrypt();
+            decryptor.setPrivateKey(localPrivateKey);
+      
+            const conversationUserData = data.map((conversationUser) => {
+              // Determine which user details to show
+              let userDetails;
+              if (conversationUser?.sender?._id === conversationUser?.receiver?._id) {
+                // Sender and receiver are the same
+                userDetails = conversationUser?.sender;
+              } else if (conversationUser?.receiver?._id !== user?._id) {
+                // If receiver is not me, show receiver's details
+                userDetails = conversationUser?.receiver;
+              } else {
+                // Otherwise, show sender's details
+                userDetails = conversationUser?.sender;
+              }
+      
+              // 3) Decrypt lastMsg (if it exists)
+              let lastMsg = conversationUser?.lastMsg;
+              if (lastMsg) {
+                let decryptedText = "";
+      
+                if (lastMsg.msgByUserId?.toString() === user?._id) {
+                  // I am the sender -> decrypt textForSender
+                  decryptedText =
+                    decryptor.decrypt(lastMsg.textForSender) || lastMsg.textForSender;
+                } else {
+                  // The message is from someone else -> decrypt textForRecipient
+                  decryptedText =
+                    decryptor.decrypt(lastMsg.textForRecipient) || lastMsg.textForRecipient;
+                }
+      
+                // Assign decrypted text to 'text' so the UI can show it
+                lastMsg = {
+                  ...lastMsg,
+                  text: decryptedText,
+                };
+              }
+      
+              // Count unseen messages
+              const countUnseenMsg = conversationUser?.message?.reduce((preve, curr) => {
+                const msgByUserId = curr?.msgByUserId?.toString();
+                if (msgByUserId !== user?._id) {
+                  return preve + (curr?.seen ? 0 : 1);
+                } else {
+                  return preve;
+                }
+              }, 0);
+      
+              return {
+                ...conversationUser,
+                userDetails,
+                unseenMsg: countUnseenMsg,
+                // Overwrite lastMsg with the newly decrypted version
+                lastMsg
+              };
+            });
+      
+            setAllUsers(conversationUserData);
+          });
         }
-    }, [socketConnection,user]);
+      }, [socketConnection, user]);      
 
     const handleLogout = () => {
         dispath(logout());
