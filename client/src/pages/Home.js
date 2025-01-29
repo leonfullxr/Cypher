@@ -19,7 +19,7 @@ const Home = () => {
         if(!location?.state?.name){
             navigate("/email");
         }
-    },[]);
+    },[location?.state?.name, navigate]);
 
     //console.log("user", user);
 
@@ -67,7 +67,7 @@ const Home = () => {
         return () => {
             socketConnection.disconnect();
         }
-    },[]);
+    },[ dispatch]);
 
 
     const basePath = location.pathname === '/'
