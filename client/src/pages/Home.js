@@ -17,7 +17,7 @@ const Home = () => {
     // Check if user is logged in    
     useEffect(() => {
         if(!location?.state?.name){
-            navigate("/email");
+            navigate("/register");
         }
     },[location?.state?.name, navigate]);
 
