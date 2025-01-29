@@ -1,6 +1,7 @@
 # Cypher
+
 ## Description
-Cypher is a cutting-edge encrypted chat application designed to prioritize user privacy and security. With end-to-end encryption, your messages remain confidential and secure, ensuring peace of mind in your communications. We don't store any IP addresses, metadata or user linked data, it is perfectly anonymous.
+Cypher is a cutting-edge encrypted chat application designed to prioritize user privacy and security. With end-to-end encryption, your messages remain confidential and secure, ensuring peace of mind in your communications. We don't store any IP addresses, metadata or user-linked data; it is perfectly anonymous.
 
 ---
 
@@ -8,102 +9,134 @@ Cypher is a cutting-edge encrypted chat application designed to prioritize user 
 - **End-to-End Encryption**: Messages are encrypted from sender to receiver, safeguarding your data from prying eyes. Every message stored on the database is encrypted and cannot be read even if the database is breached.
 - **Real-Time Messaging**: Fast and seamless chat experience.
 - **Cross-Platform Support**: Accessible on multiple devices for convenient communication.
-- **Secure Group Chats**: Encrypt conversations with multiple participants.
 - **NO Metadata Storage**: Prioritizes privacy by storing zero user metadata.
 
 ---
 
+## Registration Process
+Upon user registration, the following occurs:
+1. The client **generates a 2048-bit RSA key pair** (public and private key).
+2. The client **encrypts the private key** with the user's master password.
+3. The client **sends the registration data** (username, public key, and encrypted private key) to the server.
+4. The server **stores the information in MongoDB**.
+5. The server **acknowledges the successful registration** and redirects the client to the login page.
+
+---
+
 ## Architecture Description
-1. Client Side
+1. **Client Side**
+   - **User Interface (UI)**: Allows users to send/receive messages and manage contacts.
+   - **Local Key Management**: Generates and stores private keys encrypted with the master password.
+   - **Encryption Module**: Encrypts outgoing messages using the recipient's public key and decrypts incoming messages with the user's private key.
 
-   1. User Interface (UI): Allows users to send/receive messages and manage contacts.
-   2. Local Key Management: Generates and stores private keys encrypted with the master password.
-   3. Encryption Module: Encrypts outgoing messages using the recipient's public key and decrypts incoming messages with the user's private key.
-   4. TLS Layer: Ensures transport security between client and server.
+2. **Server Side**
+   - **Authentication Module**:
+     - Handles user login with the master password.
+     - Validates identity and grants access to stored data.
+   - **Database Connection**: Stores users' data securely in MongoDB.
+   - **Message Queue**: Stores encrypted messages so that they are retrieved by the recipient.
+   - **Key Exchange Service**: Sends user's public key for ensuring message encryption.
 
-2. Server Side
+3. **Database**
+   - Stores **public keys**.
+   - Stores **encrypted messages** (encrypted with recipient’s public key).
+   - Stores **encrypted private keys** (encrypted with master passwords).
 
-   1. Authentication Module:
-      1. Handles user login with master password.
-      2. Validates identity and grants access to stored data.
-   2. Public Key Store: Stores users' public keys securely.
-   3. Message Queue: Temporarily stores encrypted messages until they are retrieved by the recipient.
-   4. Key Exchange Service: Implements Signal Protocol for secure session key negotiation.
-   5. Database: Stores:
-      1. Public keys.
-      2. Encrypted messages (encrypted with recipient’s public key).
-      3. Encrypted private keys (encrypted with master passwords).
+---
 
-3. Database
-   1. Encrypted storage using AES encryption for all data at rest.
-   2. Strict access control policies.
+## Frameworks & APIs
+### **Database: MongoDB**
+- We use **MongoDB Atlas** as our cloud-hosted database.
+- The backend interacts with MongoDB through the **Mongoose** library for structured data modeling.
 
-4. Communication Protocol
-   1. TLS: Protects communication between the client and server.
-   2. Signal Protocol: Provides session key exchange and ensures forward secrecy.
+### **Media Storage: Cloudinary**
+- To store images and videos, we use **Cloudinary**.
+- It provides secure cloud-based storage and delivers media via **HTTPS links**.
+
+### **Real-Time Communication: Socket.io**
+- We use **Socket.io** to facilitate **real-time communication** between the client and server.
+- This enables **instant message delivery** and **live updates**.
+
+---
+
+## Project Folder Structure
+```
+Encrypted-Chat-App/
+│
+├── client/                     # Frontend (Client-side) code
+│   ├── public/                 # Static files (e.g., index.html, images, icons, manifest)
+│   ├── src/                    # React source code
+│   │   ├── assets/             # UI assets (logos, backgrounds)
+│   │   ├── components/         # UI Components (e.g., ChatBox, MessageList, SearchUser)
+│   │   ├── layout/             # Layout-related components
+│   │   ├── pages/              # Application pages (Home, Register, ForgotPassword)
+│   │   ├── redux/              # Redux store and user management
+│   │   ├── routes/             # Route definitions
+│   │   ├── services/           # API calls and WebSocket handlers
+│   │   ├── utils/              # Helper functions (e.g., encryption handling, file uploads)
+│   │   ├── App.js              # Main App entry point
+│   │   ├── index.js            # React root rendering logic
+│   │   ├── index.css           # Global styles
+│   │   └── tailwind.config.js  # Tailwind CSS configuration
+│   ├── package.json            # Frontend dependencies and scripts
+│   ├── package-lock.json       # Package lock file
+│   ├── .env                    # Environment variables
+│   ├── .gitignore              # Git ignore rules
+│   └── README.md               # Client documentation
+│
+├── server/                     # Backend (Server-side) code
+│   ├── config/                 # Configuration files (e.g., DB connection)
+│   ├── controller/             # API route handlers (auth, search, user management)
+│   ├── models/                 # Database schemas/models (User, Conversation)
+│   ├── routes/                 # API route definitions
+│   ├── services/               # Business logic (e.g., conversation retrieval, token management)
+│   ├── socket/                 # WebSocket implementation for real-time messaging
+│   ├── .env                    # Environment variables
+│   ├── .gitignore              # Git ignore rules
+│   ├── docker-compose.yml      # Docker setup for backend services
+│   ├── index.js                # Main Express server setup
+│   ├── package.json            # Backend dependencies and scripts
+│   ├── package-lock.json       # Package lock file
+│   ├── README.md               # Server documentation
+│   └── Dockerfile              # Docker container configuration
+│
+├── install.sh                  # Installation script for automated setup
+├── LICENSE                     # License file
+├── project_architecture.md      # Documentation of project architecture
+├── README.md                   # Main project README with setup instructions
+├── .git/                        # Git repository metadata
+├── .gitignore                   # Git ignore rules
+├── docker-compose.yml           # Multi-service Docker setup (client, server, database)
+└── details/                     # Additional documentation or setup files
+```
 
 ---
 
 ## Installation
-
 1. Clone the repository:
    ```bash
    git clone https://github.com/leonfullxr/Cypher.git
    ```
-
 2. Navigate to the project directory:
    ```bash
    cd Cypher
    ```
-
 3. Install dependencies and start the server:
    ```bash
    cd server
    npm install
    npm run dev
    ```
-
-4. In a new terminal window, navigate to the client directory and start the client:
+4. Start the client:
    ```bash
    cd ../client
    npm install
    npm start
    ```
-
-Alternatively, you can use the provided `install.sh` script to automate the installation process:
-
+Alternatively, you can use the provided `install.sh` script:
 ```bash
 ./install.sh
 ```
-
-This script will handle the installation and startup of both the server and client.
-
----
-
-## Usage
-- Open the application on your device.
-- Create an account or log in with your credentials.
-- Start secure conversations with your contacts.
-
----
-
-## Contributing
-We welcome contributions from the community! Please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature:
-   ```bash
-   git checkout -b feature-name
-   ```
-3. Commit your changes:
-   ```bash
-   git commit -m "Add feature description"
-   ```
-4. Push to your branch:
-   ```bash
-   git push origin feature-name
-   ```
-5. Open a pull request and describe your changes.
 
 ---
 
@@ -114,3 +147,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 For inquiries or support, reach out to us at [admin@leonfuller.space](mailto:admin@leonfuller.space).
+
