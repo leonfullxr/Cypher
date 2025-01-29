@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { logout, setSocketConnection, setUser } from "../redux/userSlice";
 import SideBar from "../components/SideBar";
@@ -10,12 +9,19 @@ import io from "socket.io-client";
 import { setOnlineUser } from "../redux/userSlice";
 
 const Home = () => {
-    const user = useSelector(state => state.user);
+    //const user = useSelector(state => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
 
-    console.log("user", user);
+    // Check if user is logged in    
+    useEffect(() => {
+        if(!location?.state?.name){
+            navigate("/email");
+        }
+    },[]);
+
+    //console.log("user", user);
 
     const fetchUserDetails = async () => {
         try {
@@ -32,7 +38,8 @@ const Home = () => {
                 dispatch(logout());
                 navigate('/email');
             }
-            console.log("current user details", response);
+
+            //console.log("current user details", response);
         } catch (error) {
             console.log("error", error);
         }
