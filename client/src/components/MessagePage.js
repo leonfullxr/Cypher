@@ -302,7 +302,7 @@ const MessagePage = () => {
             <FaAngleLeft size={25} />
           </Link>
           {/* Avatar Click Image */}
-          <div onClick={recipientInfo?.profile_pic ? handleAvatarClick : undefined} className={`relative ${recipientInfo?.profile_pic ? "cursor-pointer hover:shadow-lg transition-shadow duration-300" : ""}`}>
+          <div onClick={recipientInfo?.profile_pic ? handleAvatarClick : undefined} className={`relative ${recipientInfo?.profile_pic ? "cursor-pointer transition-shadow duration-300" : ""}`}>
               <Avatar
               width={50}
               height={50}
