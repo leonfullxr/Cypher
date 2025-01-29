@@ -65,7 +65,12 @@ const CheckPasswordPage = () => {
                 setData({
                   password : "",
                 })
-                navigate('/')
+
+                if (response.data.isMfaActive) {
+                    navigate("/mfa");
+                } else {
+                    navigate("/");
+                }
             }
         } catch (error) {
             toast.error(error?.response?.data?.message || "An error occurred"); // Handle errors
