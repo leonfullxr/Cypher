@@ -7,7 +7,8 @@ const initialState = {
   profile_pic : "",
   token : "",
   onlineUser : [],
-  socketConnection : null
+  socketConnection : null,
+  isMfaActive: false,
 }
 
 export const userSlice = createSlice({
@@ -19,6 +20,7 @@ export const userSlice = createSlice({
         state.name = action.payload.name 
         state.email = action.payload.email 
         state.profile_pic = action.payload.profile_pic 
+        state.isMfaActive = action.payload.isMfaActive
     },
     setToken : (state,action)=>{
         state.token = action.payload
