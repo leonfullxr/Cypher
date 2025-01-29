@@ -1,6 +1,14 @@
 {
   "name": "client",
   "version": "0.1.0",
+  "description": "a react app for the Cypher app",
+  "author": "Leon Elliott Fuller",
+  "license": "MIT",
+  "homepage": "https://github.com/leonfullxr/Cypher",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leonfullxr/Cypher"
+  },
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",

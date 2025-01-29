@@ -1,6 +1,14 @@
 {
   "name": "server",
   "version": "1.0.0",
+  "description": "a nodejs server for the Cypher app",
+  "author": "Leon Elliott Fuller",
+  "license": "MIT",
+  "homepage": "https://github.com/leonfullxr/Cypher",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leonfullxr/Cypher"
+  },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -8,8 +16,6 @@
     "start": "node index.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "commonjs",
   "description": "",
   "dependencies": {
