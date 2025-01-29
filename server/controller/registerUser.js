@@ -24,7 +24,8 @@ async function registerUser(request, response){
             password: hashPassword,
             profile_pic,
             publicKey: publicKey,
-            encryptedPrivateKey: encryptedPrivateKey
+            encryptedPrivateKey: encryptedPrivateKey,
+            isMfaActive: false,
         });
         const userSave = await newUser.save();
 
