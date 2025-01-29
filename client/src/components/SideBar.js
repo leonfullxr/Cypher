@@ -69,20 +69,9 @@ const SideBar = () => {
                 };
               }
       
-              // Count unseen messages
-              const countUnseenMsg = conversationUser?.message?.reduce((preve, curr) => {
-                const msgByUserId = curr?.msgByUserId?.toString();
-                if (msgByUserId !== user?._id) {
-                  return preve + (curr?.seen ? 0 : 1);
-                } else {
-                  return preve;
-                }
-              }, 0);
-      
               return {
                 ...conversationUser,
                 userDetails,
-                unseenMsg: countUnseenMsg,
                 // Overwrite lastMsg with the newly decrypted version
                 lastMsg
               };
