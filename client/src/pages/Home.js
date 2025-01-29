@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout, setSocketConnection, setUser } from "../redux/userSlice";
 import SideBar from "../components/SideBar";
 import logo from "../assets/logo2.png";
@@ -13,15 +13,9 @@ const Home = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+    const user = useSelector(state => state?.user);
 
-    // Check if user is logged in    
-    // useEffect(() => {
-    //     if(!location?.state?.name){
-    //         navigate("/register");
-    //     }
-    // },[location?.state?.name, navigate]);
-
-    //console.log("user", user);
+    const [loading, setLoading] = useState(true); // Estado para evitar render prematuro
 
     const fetchUserDetails = async () => {
         try {
@@ -37,38 +31,60 @@ const Home = () => {
             if(response.data.data.logout){
                 dispatch(logout());
                 navigate('/email');
+            } else {
+                dispatch(setUser(response.data.data));
             }
 
             //console.log("current user details", response);
         } catch (error) {
-            console.log("error", error);
+            console.log("error fetching user", error);
+            dispatch(logout());
+            navigate('/register');
+        } finally {
+            setLoading(false); // avoid a blank render
         }
     }
 
+    // check if the user is authenticated
     useEffect(() => {
         fetchUserDetails();
     },[]);
 
+    useEffect(() => {
+        if (!loading && !user?._id && location.pathname !== "/register") {
+            navigate("/register");
+        }
+    }, [loading, user, location.pathname, navigate]);
+
     /** socket connection **/
     useEffect(() => {
-        const socketConnection = io(process.env.REACT_APP_BACKEND_URL, {
-            auth : {
-                token : localStorage.getItem('token')
+        if (!loading) {
+            const socketConnection = io(process.env.REACT_APP_BACKEND_URL, {
+                auth : {
+                    token : localStorage.getItem('token')
+                }
+            })
+    
+            socketConnection.on('online-user', (data) => {
+                console.log('online-user', data);
+                dispatch(setOnlineUser(data));
+            })
+    
+            dispatch(setSocketConnection(socketConnection));
+    
+            return () => {
+                socketConnection.disconnect();
             }
-        })
-
-        socketConnection.on('online-user', (data) => {
-            console.log('online-user', data);
-            dispatch(setOnlineUser(data));
-        })
-
-        dispatch(setSocketConnection(socketConnection));
-
-        return () => {
-            socketConnection.disconnect();
         }
-    },[ dispatch]);
+    },[dispatch, loading]);
 
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p className="text-lg text-gray-600">Loading...</p>
+            </div>
+        );
+    }
 
     const basePath = location.pathname === '/'
   return (
