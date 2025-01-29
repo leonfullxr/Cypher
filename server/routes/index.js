@@ -26,5 +26,11 @@ router.post('/update-user', updateUserDetails);
 router.post('/search-user', searchUser);
 // Get public key
 router.get('/get-public-key', getPublicKey);
+// 2FA setup
+router.post('/2fa/setup', authenticateJWT, setup2FA);
+// 2FA verify 
+router.post('/2fa/verify', authenticateJWT, verify2FA);
+// 2FA reset
+router.post('/2fa/reset', authenticateJWT, reset2FA);
 
 module.exports = router;
