@@ -28,25 +28,40 @@
 1. The user **generates an RSA key pair** locally.
 2. The public key is sent to the server.
 3. The **private key is encrypted with the master password** and uploaded to the server for recovery.
+![User Registration](./details/images/registration_workflow.png)
 
 ### **Sending a Message**
 
 1. The sender requests the recipient’s **public key** from the server.
-2. The sender **encrypts the message** using the recipient’s **public key**.
-3. The encrypted message is sent to the server **via a WebSocket connection**.
-4. The server **stores the encrypted message** in the database.
+2. The server sends a request to MongoDB to retreive the recipient's public key
+3. MongoDB sends the recipient's public key
+4. The server returns the recipient's public key to the sender
+5. The sender **encrypts the message** using the recipient’s **public key**.
+6. The encrypted message is sent to the server **via a Socket connection**.
+7. The server sends the encrypted message to the MongoDB database.
+8. MongoDB **stores the encrypted message** in the database.
+![Sending a Message](./details/images/sending_message_workflow.png)
 
 ### **Receiving a Message**
 
-1. The recipient **retrieves the encrypted message** from the server.
-2. The recipient **decrypts the message locally** using their private key.
+1. The recipient requests the **encrypted message** from the server.
+2. The server requests the encrypted message from the MongoDB database.
+3. MongoDB sends the encrypted message to the server.
+4. The server sends the encrypted message to the recipient.
+5. The recipient **retrieves the encrypted message** from the server.
+6. The recipient **decrypts the message locally** using their private key.
+![Receiving a Message](./details/images/receiving_message_workflow.png)
 
 ### **Multi-Device Support Workflow**
 
 1. The user logs in with their **master password**.
-2. The master password is used to **derive a cryptographic key**.
-3. The derived key decrypts the user’s **encrypted private key** stored on the server.
-4. The private key is then **stored securely on the new device**.
+2. The client forwards the payload to the server for verification.
+3. The server verifies the user’s identity and login.
+4. The server requests the **encrypted private key** from the MongoDB database.
+5. The server sends the encrypted private key to the user.
+6. The derived key decrypts the user’s **encrypted private key**, restoring access to the private key.
+7. The user’s **private key is decrypted** and stored locally for message decryption.
+![Multi-Device Support](./details/images/multi_device_workflow.png)
 
 ---
 
@@ -62,8 +77,6 @@
    - Implementing the **Signal Protocol** would ensure past messages remain secure even if encryption keys are compromised.
 2. **Zero-Knowledge Proof Authentication**:
    - Ensuring that authentication is done without exposing the password to the server.
-3. **Multi-Factor Authentication (MFA)**:
-   - Adding additional security layers such as **OTP verification**.
 
 ---
 
