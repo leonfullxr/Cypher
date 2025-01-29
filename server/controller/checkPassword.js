@@ -39,6 +39,7 @@ async function checkPassword(request, response){
             message: 'Password verified, login successful',
             token : token,
             encryptedPrivateKey: user.encryptedPrivateKey,
+            isMfaActive: user.isMfaActive,
             success: true
         });
 
