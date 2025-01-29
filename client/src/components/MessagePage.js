@@ -18,6 +18,7 @@ const MessagePage = () => {
   const recipientParams = useParams();
   const socketConnection = useSelector((state) => state?.user?.socketConnection);
   const loggedInUser = useSelector((state) => state?.user);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
   // Public key of the OTHER user (the recipient)
   const [recipientInfo, setRecipientInfo] = useState({
@@ -253,6 +254,43 @@ const MessagePage = () => {
   };
 
   // -------------------------------------------
+  // AVATAR MODAL
+  // -------------------------------------------
+  const handleAvatarClick = () => {
+    if (recipientInfo?.profile_pic) {
+      setIsAvatarModalOpen(true);
+    }
+  };  
+
+  const handleCloseAvatarModal = () => {
+    setIsAvatarModalOpen(false);
+  };
+
+  useEffect(() => { // Close modal on Escape key press
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setIsAvatarModalOpen(false);
+      }
+    };
+
+    const handleClickOutside = (e) => {
+      if (e.target.id === "avatar-modal-overlay") {
+        setIsAvatarModalOpen(false);
+      }
+    };
+
+    if (isAvatarModalOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("click", handleClickOutside);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, [isAvatarModalOpen]);
+
+  // -------------------------------------------
   // RENDER
   // -------------------------------------------
   return (
@@ -263,13 +301,19 @@ const MessagePage = () => {
           <Link to="/" className="lg:hidden">
             <FaAngleLeft size={25} />
           </Link>
-          <Avatar
-            width={50}
-            height={50}
-            imageUrl={recipientInfo?.profile_pic}
-            name={recipientInfo?.name}
-            userId={recipientInfo?._id}
-          />
+          {/* Avatar Click Image */}
+          <div onClick={recipientInfo?.profile_pic ? handleAvatarClick : undefined} className={`relative ${recipientInfo?.profile_pic ? "cursor-pointer hover:shadow-lg transition-shadow duration-300" : ""}`}>
+              <Avatar
+              width={50}
+              height={50}
+              imageUrl={recipientInfo?.profile_pic}
+              name={recipientInfo?.name}
+              userId={recipientInfo?._id}           
+            />
+            {recipientInfo?.profile_pic && (
+              <div className="absolute inset-0 rounded-full bg-black bg-opacity-0 hover:bg-opacity-20 transition-bg duration-300"></div>
+            )}    
+          </div>
           <div>
             <h3 className="font-semibold text-lg my-0 text-ellipsis line-clamp-1">
               {recipientInfo?.name}
@@ -286,7 +330,8 @@ const MessagePage = () => {
 
         <div>
           <button className="cursor-pointer hover:text-primary">
-            <HiDotsVertical />
+            <HiDotsVertical /> 
+            {/* TODO: Add more options here */}
           </button>
         </div>
       </header>
@@ -429,6 +474,27 @@ const MessagePage = () => {
           </button>
         </form>
       </section>
+
+      {/* Avatar Modal */}
+      {isAvatarModalOpen && (
+        <div id="avatar-modal-overlay" className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="relative">
+            {/* Close button */}
+            <button
+              className="absolute top-0 right-0 text-white text-2xl p-2 z-10"
+              onClick={handleCloseAvatarModal}
+            >
+              <IoClose size={30} />
+            </button>
+            {/* Avatar's Image */}
+            <img
+              src={recipientInfo?.profile_pic}
+              alt={`${recipientInfo?.name}'s Avatar`}
+              className="max-w-full max-h-full rounded object-contain shadow-lg"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
