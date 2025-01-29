@@ -20,7 +20,7 @@ const CheckPasswordPage = () => {
         if(!location?.state?.name){
             navigate("/email");
         }
-    },[]);
+    },[location?.state?.name, navigate]);
 
     const handleOnChange = (e) => {
         const {name, value} = e.target;
@@ -59,7 +59,7 @@ const CheckPasswordPage = () => {
                 const bytes = CryptoJS.AES.decrypt(response?.data?.encryptedPrivateKey, data.password);
                 const privateKey = bytes.toString(CryptoJS.enc.Utf8);
 
-                const userId = location?.state?._id;
+                //const userId = location?.state?._id;
                 localStorage.setItem("privateKey", privateKey);
     
                 setData({
