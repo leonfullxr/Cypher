@@ -26,6 +26,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Encrypted private key is required']
     },
+    isMfaActive: {
+        type: Boolean,
+        required: false,
+    },
+    twoFactorSecret: {
+        type: String,
+    },
 }, { 
     timestamps: true 
 });
