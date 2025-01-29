@@ -1,4 +1,7 @@
-# Cypher
+<h1 align="center">Welcome to Cypher</h1>
+<p align="center">
+   <img src="client/public/icon.png" alt="Cypher Logo" width="50%">
+</p>
 
 ## Description
 Cypher is a cutting-edge encrypted chat application designed to prioritize user privacy and security. With end-to-end encryption, your messages remain confidential and secure, ensuring peace of mind in your communications. We don't store any IP addresses, metadata or user-linked data; it is perfectly anonymous.
@@ -125,17 +128,17 @@ Encrypted-Chat-App/
    ```bash
    cd server
    npm install
-   npm run dev
+   npm run dev &
    ```
 4. Start the client:
    ```bash
    cd ../client
    npm install
-   npm start
+   npm start &
    ```
 Alternatively, you can use the provided `install.sh` script:
 ```bash
-./install.sh
+bash install.sh
 ```
 
 ---
