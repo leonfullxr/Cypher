@@ -1,4 +1,5 @@
-<h1 align="center">Welcome to Cypher</h1>
+<h1 align="center">Welcome to Cypher 🔐 </h1>
+
 <p align="center">
    <img src="client/public/icon.png" alt="Cypher Logo" width="50%">
 </p>
