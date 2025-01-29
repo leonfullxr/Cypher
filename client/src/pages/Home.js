@@ -15,11 +15,11 @@ const Home = () => {
     const location = useLocation();
 
     // Check if user is logged in    
-    useEffect(() => {
-        if(!location?.state?.name){
-            navigate("/register");
-        }
-    },[location?.state?.name, navigate]);
+    // useEffect(() => {
+    //     if(!location?.state?.name){
+    //         navigate("/register");
+    //     }
+    // },[location?.state?.name, navigate]);
 
     //console.log("user", user);
 
