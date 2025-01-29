@@ -7,40 +7,65 @@ import Home from "../pages/Home";
 import MessagePage from "../components/MessagePage";
 import AuthLayouts from "../layout";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
+import Check2FAPage from "../pages/Check2FAPage";
 
 const router = createBrowserRouter([
     {
-        path : "/",
-        element : <App/>,
-        children : [
+        path: "/",
+        element: <App />,
+        children: [
             {
-                path : "register",
-                element : <AuthLayouts><RegisterPage/></AuthLayouts>
+                path: "register",
+                element: (
+                    <AuthLayouts>
+                        <RegisterPage />
+                    </AuthLayouts>
+                ),
             },
             {
-                path : 'email',
-                element : <AuthLayouts><CheckEmailPage/></AuthLayouts>
+                path: "email",
+                element: (
+                    <AuthLayouts>
+                        <CheckEmailPage />
+                    </AuthLayouts>
+                ),
             },
             {
-                path : 'password',
-                element : <AuthLayouts><CheckPasswordPage/></AuthLayouts>
+                path: "password",
+                element: (
+                    <AuthLayouts>
+                        <CheckPasswordPage />
+                    </AuthLayouts>
+                ),
             },
             {
-                path : 'forgot-password',
-                element : <AuthLayouts><ForgotPasswordPage/></AuthLayouts>
+                path: "mfa",
+                element: (
+                    <AuthLayouts>
+                        <Check2FAPage />
+                    </AuthLayouts>
+                ),
             },
             {
-                path : "",
-                element : <Home/>,
-                children : [
+                path: "forgot-password",
+                element: (
+                    <AuthLayouts>
+                        <ForgotPasswordPage />
+                    </AuthLayouts>
+                ),
+            },
+            {
+                path: "",
+                element: <Home />,
+                children: [
                     {
-                        path : ':userId',
-                        element : <MessagePage/>
-                    }
-                ]
-            }
-        ]
-    }
-])
+                        path: ":userId",
+                        element: <MessagePage />,
+                    },
+                ],
+            },
+        ],
+    },
+]);
 
 export default router;
