@@ -4,7 +4,6 @@
   "description": "a react app for the Cypher app",
   "author": "Leon Elliott Fuller",
   "license": "MIT",
-  "homepage": "https://github.com/leonfullxr/Cypher",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leonfullxr/Cypher"
