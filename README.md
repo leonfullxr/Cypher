@@ -145,7 +145,7 @@ bash install.sh
 ---
 
 ## Demo
-![Cypher Demo](details/videos/cypher_demo.mp4)
+![Cypher Demo](https://youtu.be/iBy1EfT4Mdk)
 
 ---
 
