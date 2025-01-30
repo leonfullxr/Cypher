@@ -170,14 +170,21 @@ start_project() {
   echo -e " Navigating to: $dir"
   echo -e "------------------------------------------------------------"
   cd "$dir" || { echo "❌ Directory not found. Exiting."; exit 1; }
+
   echo -e "Installing dependencies..."
   npm install
-  echo -e "Starting service..."
+
+  echo -e "Starting service with command: $command"
+  # Start in the background
   $command &
+
+  # Go back to the parent after starting
+  cd - &> /dev/null || exit 1
 }
 
-start_project "server" "npm run dev"
-cd "../"
+echo ">>> Starting server..."
+start_project "server" "nodemon index.js"
+echo ">>> Starting client..."
 start_project "client" "npm start"
 
 echo -e "\n🎉 Setup complete! Your project is running successfully! 🚀\n"
