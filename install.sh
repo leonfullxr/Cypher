@@ -171,9 +171,9 @@ start_project() {
   echo -e "------------------------------------------------------------"
   cd "$dir" || { echo "❌ Directory not found. Exiting."; exit 1; }
   echo -e "Installing dependencies..."
-  # npm install
+  npm install
   echo -e "Starting service..."
-  # $command &
+  $command &
 }
 
 start_project "server" "npm run dev"
