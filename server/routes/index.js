@@ -7,6 +7,10 @@ const logout = require('../controller/logout');
 const updateUserDetails = require('../controller/updateUserDetails');
 const searchUser = require('../controller/searchUser');
 const getPublicKey = require('../controller/getPublicKey');
+const setup2FA = require('../controller/setup2FA');
+const verify2FA = require('../controller/verify2FA');
+const reset2FA = require('../controller/reset2FA');
+const authenticateJWT = require('../middleware/auth');
 
 const router = express.Router();
 
