@@ -183,7 +183,7 @@ start_project() {
 }
 
 echo ">>> Starting server..."
-start_project "server" "nodemon index.js"
+start_project "server" "node index.js"
 echo ">>> Starting client..."
 start_project "client" "npm start"
 
