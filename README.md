@@ -152,6 +152,11 @@ bash install.sh
 ## MFA Demo
 [![Watch the video](https://img.youtube.com/vi/geXBO4Sf9sE/maxresdefault.jpg)](https://youtu.be/geXBO4Sf9sE)
 
+---
+
+## Responsive Design Demo
+[![Watch the video](https://img.youtube.com/vi/_2MsXbxJsCE/maxresdefault.jpg)](https://youtu.be/_2MsXbxJsCE)
+
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
