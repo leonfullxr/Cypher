@@ -40,6 +40,8 @@ Cypher is a cutting-edge encrypted chat application designed to prioritize user 
 - Jsonwebtoken (JWT): Token-based authentication for user sessions.
 - Cloudinary: Media storage for user profile pictures and message attachments.
 
+---
+
 ## Registration Process
 
 Upon user registration, the following occurs:
