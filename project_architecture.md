@@ -71,7 +71,7 @@
 6. The recipient **decrypts the message locally** using their private key.
 ![Receiving a Message](./details/images/receiving_message_workflow.png)
 
-### **Multi-Device Support Workflow**
+### **Login/Multi-Device Support Workflow**
 
 1. The user logs in with their **master password**.
 2. The client forwards the payload to the server for verification.
@@ -80,7 +80,41 @@
 5. The server sends the encrypted private key to the user.
 6. The derived key decrypts the user’s **encrypted private key**, restoring access to the private key.
 7. The user’s **private key is decrypted** and stored locally for message decryption.
+[If isMfaActive] 
+8. The server requests TOTP to the client.
+9. The client forwards the request to the user.
+10. The user sends the TOTP to the client.
+11. The client forwards TOTP to the server for verification.
+12. The server sends the user's token to the middleware for authentication.
+13. The middleware verifies the user's authenticity.
+14. The server requests the twoFactorSecret to the database.
+15. The database returns the twoFactorSecret to the server.
+14. The server verifies the user's twoFactorSecret and TOTP.
 ![Multi-Device Support](./details/images/multi_device_workflow.png)
+
+### **Enabling 2FA**
+
+0. The client requests 2FA enabling to the server, sendind the user's token.
+1. The server forwards the user's token to the middleware for authentication.
+2. The middleware verifies the user's authenticity.
+3. The server generates twoFactorSecret and qrCode.
+4. The server sends qrCode to the client for verification.
+5. The client forwards the qrCode to the user to be scanned.
+6. The user sends the TOTP code to the client.
+7. The client forwards the TOTP code and twoFactorSecret to the server.
+8. The server forwards the user's token to the middleware for authentication.
+9. The middleware verifies the user's authenticity.
+10. The sever verifies the user's MFA credentials.
+11. The server sends the twoFactorSecret to the database.
+12. The database stores the twoFactoSecret.
+
+### **Disabling 2FA**
+
+0. The client requests 2FA disabling to the server, sending the user's token.
+1. The server forwards the user's token to the middleware for authentication.
+2. The middleware verifies the user's authenticity.
+3. The server sends a request to reset the user's twoFactorSecret and isMfaActive to the database.
+4. The database resets the twoFactorSecret and isMfaActive.
 
 ---
 
