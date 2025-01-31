@@ -4,6 +4,31 @@
    <img src="client/public/icon.png" alt="Cypher Logo" width="50%">
 </p>
 
+## Table of Contents
+1. [Description](#description)
+2. [Features](#features)
+3. [Technology Stack](#technology-stack)
+   - [Client-Side](#client-side)
+   - [Server-Side](#server-side)
+4. [Registration Process](#registration-process)
+5. [Architecture Description](#architecture-description)
+   - [Client Side](#client-side-1)
+   - [Server Side](#server-side-1)
+   - [Database](#database)
+6. [Frameworks & APIs](#frameworks--apis)
+   - [Database: MongoDB](#database-mongodb)
+   - [Media Storage: Cloudinary](#media-storage-cloudinary)
+   - [Real-Time Communication: Socket.io](#real-time-communication-socketio)
+7. [Project Folder Structure](#project-folder-structure)
+8. [Installation](#installation)
+9. [Demo](#demo)
+10. [MFA Demo](#mfa-demo)
+11. [Responsive Design Demo](#responsive-design-demo)
+12. [License](#license)
+13. [Contact](#contact)
+
+---
+
 ## Description
 
 Cypher is a cutting-edge encrypted chat application designed to prioritize user privacy and security. With end-to-end encryption, your messages remain confidential and secure, ensuring peace of mind in your communications. We don't store any IP addresses, metadata or user-linked data; it is perfectly anonymous.
