@@ -46,6 +46,8 @@ Upon user registration, the following occurs:
    - Stores **encrypted messages** (encrypted with recipient’s public key).
    - Stores **encrypted private keys** (encrypted with master passwords).
 
+For more details, refer to the [project architecture documentation](project_architecture.md).
+
 ---
 
 ## Frameworks & APIs
