@@ -11,10 +11,13 @@
    - [Sending a Message](#sending-a-message)
    - [Receiving a Message](#receiving-a-message)
    - [Multi-Device Support Workflow](#multi-device-support-workflow)
-3. [Vulnerabilities & Security Considerations](#vulnerabilities--security-considerations)
+3. [Security Specifications](#security-specifications)
+   - [RSA-2048 for Secure Message Encryption](#rsa-2048-for-secure-message-encryption)
+   - [Salting and Hashing for Secure Password Storage](#salting-and-hashing-for-secure-password-storage)
+4. [Vulnerabilities & Security Considerations](#vulnerabilities--security-considerations)
    - [Potential Vulnerabilities](#potential-vulnerabilities)
    - [Potential Improvements](#potential-improvements)
-4. [Conclusion](#conclusion)
+5. [Conclusion](#conclusion)
 
 ---
 
@@ -119,6 +122,20 @@
 ![Disabling 2FA](./details/images/disabling_mfa_workflow.png)
 
 ---
+
+## Security Specifications
+
+### **RSA-2048 for Secure Message Encryption**
+
+RSA asymmetric encryption algorithm, with a default key size of 2048 bits, provides a good balance between **security** and **performance**. RSA-2048 is widely considered secure for most applications today, as breaking it through brute force would require an infeasible amount of computational power. While larger key sizes, such as 4096 bits, offer stronger security, they also introduce significant performance overhead, especially in a real-time messaging application where encryption and decryption operations need to be efficient."
+
+
+### **Salting and Hashing for Secure Password Storage**
+
+Hashing passwords ensures that the actual password is **never stored**, reducing the risk of exposing sensitive data in the event of a breach. Additionally, adding a salt further protects against dictionary and brute-force attacks by introducing **randomness** into the hashing process. This is especially important in a messaging app, where users are exchanging sensitive data in real-time, and security must be robust to protect privacy.
+
+---
+
 
 ## Vulnerabilities & Security Considerations
 
