@@ -93,7 +93,7 @@
 14. The server requests the twoFactorSecret to the database.
 15. The database returns the twoFactorSecret to the server.
 14. The server verifies the user's twoFactorSecret and TOTP.
-![Multi-Device Support](./details/images/multi_device_workflow.png)
+![Multi-Device Support](./details/images/login_multidevice_workflow.png)
 
 ### **Enabling 2FA**
 
@@ -110,6 +110,7 @@
 10. The sever verifies the user's MFA credentials.
 11. The server sends the twoFactorSecret to the database.
 12. The database stores the twoFactoSecret.
+![Enabling 2FA](./details/images/enabling_mfa_workflow.png)
 
 ### **Disabling 2FA**
 
@@ -118,6 +119,7 @@
 2. The middleware verifies the user's authenticity.
 3. The server sends a request to reset the user's twoFactorSecret and isMfaActive to the database.
 4. The database resets the twoFactorSecret and isMfaActive.
+![Disabling 2FA](./details/images/disabling_mfa_workflow.png)
 
 ---
 
