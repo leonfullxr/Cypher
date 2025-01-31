@@ -127,6 +127,7 @@ if [[ -f $ENV_FILE ]]; then
   sed -i.bak "/^REACT_APP_BACKEND_URL=/c\REACT_APP_BACKEND_URL=http://localhost:$SERVER_PORT" "$ENV_FILE"
   sed -i.bak "/^FRONTEND_PORT=/c\FRONTEND_PORT=$CLIENT_PORT" "$ENV_FILE"
   sed -i.bak "/^REACT_APP_FRONTEND_URL=/c\REACT_APP_FRONTEND_URL=http://localhost:$CLIENT_PORT" "$ENV_FILE"
+  sed -i.bak "/^PORT=/c\PORT=$CLIENT_PORT" "$ENV_FILE"
 else
   echo "Creating $ENV_FILE with updated values..."
   {
@@ -135,6 +136,7 @@ else
     echo "REACT_APP_BACKEND_URL=http://localhost:$SERVER_PORT"
     echo "FRONTEND_PORT=$CLIENT_PORT"
     echo "REACT_APP_FRONTEND_URL=http://localhost:$CLIENT_PORT"
+    echo "PORT=${CLIENT_PORT}"
   } > "$ENV_FILE"
 fi
 
