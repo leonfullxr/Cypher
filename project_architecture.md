@@ -1,4 +1,23 @@
 # Encrypted Chat Application Design and Workflow
+
+## Table of Contents
+
+1. [System Architecture](#system-architecture)
+   - [Client](#1-client)
+   - [Server](#2-server)
+   - [Database](#3-database)
+2. [Workflows](#workflows)
+   - [User Registration](#user-registration)
+   - [Sending a Message](#sending-a-message)
+   - [Receiving a Message](#receiving-a-message)
+   - [Multi-Device Support Workflow](#multi-device-support-workflow)
+3. [Vulnerabilities & Security Considerations](#vulnerabilities--security-considerations)
+   - [Potential Vulnerabilities](#potential-vulnerabilities)
+   - [Potential Improvements](#potential-improvements)
+4. [Conclusion](#conclusion)
+
+---
+
 ## System Architecture
 
 ### 1. **Client**
@@ -33,9 +52,9 @@
 ### **Sending a Message**
 
 1. The sender requests the recipient’s **public key** from the server.
-2. The server sends a request to MongoDB to retreive the recipient's public key
-3. MongoDB sends the recipient's public key
-4. The server returns the recipient's public key to the sender
+2. The server sends a request to MongoDB to retrieve the recipient's public key.
+3. MongoDB sends the recipient's public key.
+4. The server returns the recipient's public key to the sender.
 5. The sender **encrypts the message** using the recipient’s **public key**.
 6. The encrypted message is sent to the server **via a Socket connection**.
 7. The server sends the encrypted message to the MongoDB database.
@@ -68,7 +87,9 @@
 ## Vulnerabilities & Security Considerations
 
 ### **Potential Vulnerabilities**
+
 - **Replay Attacks**: Without session expiration, old encrypted messages could be replayed to trick the recipient.
+
 - **Password Recovery**: Storing encrypted private keys for password recovery poses a security risk if the master password is compromised.
 
 ### **Potential Improvements**
@@ -82,5 +103,4 @@
 
 ## Conclusion
 
-This project provides a **secure and privacy-focused** messaging solution that ensures **end-to-end encryption** while allowing users to communicate safely without storing any metadata . Future improvements will focus on enhancing security, usability, adding the TOR relay network for IP anonymity, and password recovery support.
-
+This project provides a **secure and privacy-focused** messaging solution that ensures **end-to-end encryption** while allowing users to communicate safely without storing any metadata. Future improvements will focus on enhancing security, usability, adding the TOR relay network for IP anonymity, and password recovery support.
