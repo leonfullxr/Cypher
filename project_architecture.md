@@ -30,7 +30,7 @@
 
 - Acts as a **relay** for encrypted messages.
 - Stores and retrieves **public/private keys** and **encrypted messages** from the database.
-- Facilitates secure key exchange between users.
+- Facilitates key exchange between users.
 
 ### 3. **Database**
 
@@ -89,7 +89,7 @@
 13. The middleware verifies the user's authenticity.
 14. The server requests the twoFactorSecret to the database.
 15. The database returns the twoFactorSecret to the server.
-14. The server verifies the user's twoFactorSecret and TOTP.
+16. The server verifies the user's twoFactorSecret and TOTP.
 ![Multi-Device Support](./details/images/login_multidevice_workflow.png)
 
 ### **Enabling 2FA**
