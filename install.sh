@@ -4,6 +4,54 @@
 #                          SYSTEM CHECK                               #
 #######################################################################
 
+# Enable job control so that background processes can be tracked.
+set -m
+
+#######################################################################
+#                           SIGNAL HANDLING                           #
+#######################################################################
+cleanup() {
+  echo -e "\n\n⚠️  Caught interrupt signal. Cleaning up listening processes on specified ports..."
+
+  # Cleanup for CLIENT_PORT
+  if [ -n "$CLIENT_PORT" ]; then
+    client_pids=$(lsof -nP -iTCP:$CLIENT_PORT -sTCP:LISTEN -t)
+    if [ -n "$client_pids" ]; then
+      echo "Sending SIGTERM to listening processes on port $CLIENT_PORT: $client_pids"
+      kill $client_pids
+      sleep 2
+      # Check if still alive, then force kill.
+      client_pids=$(lsof -nP -iTCP:$CLIENT_PORT -sTCP:LISTEN -t)
+      if [ -n "$client_pids" ]; then
+        echo "Force killing remaining processes on port $CLIENT_PORT: $client_pids"
+        kill -9 $client_pids
+      fi
+    fi
+  fi
+
+  # Cleanup for SERVER_PORT
+  if [ -n "$SERVER_PORT" ]; then
+    server_pids=$(lsof -nP -iTCP:$SERVER_PORT -sTCP:LISTEN -t)
+    if [ -n "$server_pids" ]; then
+      echo "Sending SIGTERM to listening processes on port $SERVER_PORT: $server_pids"
+      kill $server_pids
+      sleep 2
+      # Check if still alive, then force kill.
+      server_pids=$(lsof -nP -iTCP:$SERVER_PORT -sTCP:LISTEN -t)
+      if [ -n "$server_pids" ]; then
+        echo "Force killing remaining processes on port $SERVER_PORT: $server_pids"
+        kill -9 $server_pids
+      fi
+    fi
+  fi
+
+  # Exit with success status so that the error message is not reported by the script.
+  exit 0
+}
+
+# Register the cleanup function for SIGINT (Ctrl+C) and SIGTERM.
+trap cleanup SIGINT SIGTERM
+
 echo -e "# Checking System Requirements                              #"
 
 ############################################################
@@ -198,7 +246,7 @@ start_project() {
   npm install
 
   echo -e "Starting service with command: $command"
-  # Start in the background
+  # Start in the background and capture its PID
   $command &
 
   # Go back to the parent after starting
@@ -207,7 +255,12 @@ start_project() {
 
 echo ">>> Starting server..."
 start_project "server" "node index.js"
+
 echo ">>> Starting client..."
 start_project "client" "npm start"
 
 echo -e "\n🎉 Setup complete! Your project is running successfully! 🚀\n"
+echo "Press Ctrl+C to stop both services and free their ports."
+
+# Wait for all background processes so that the trap remains active.
+wait
