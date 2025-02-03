@@ -58,6 +58,19 @@ else
 fi
 
 ############################################################
+# Function to check if a port is in use
+############################################################
+is_port_in_use() {
+  local port=$1
+  # The ss command lists all listening ports; grep for ":port " to check usage.
+  if ss -tlpn 2>/dev/null | grep -q ":$port "; then
+    return 0  # Port is in use.
+  else
+    return 1  # Port is free.
+  fi
+}
+
+############################################################
 # Ask the user for the client port
 ############################################################
 DEFAULT_PORT_FRONTEND=9999
@@ -77,6 +90,10 @@ while true; do
   fi
   if (( CLIENT_PORT < 1024 || CLIENT_PORT > 65535 )); then
     echo "❌ Invalid port number. Please enter a port between 1024 and 65535."
+    continue
+  fi
+  if is_port_in_use "$CLIENT_PORT"; then
+    echo "❌ Port $CLIENT_PORT is already in use. Please choose a different port."
     continue
   fi
   break
@@ -111,6 +128,10 @@ while true; do
   fi
   if (( SERVER_PORT < 1024 || SERVER_PORT > 65535 )); then
     echo "❌ Invalid port number. Please enter a port between 1024 and 65535."
+    continue
+  fi
+  if is_port_in_use "$SERVER_PORT"; then
+    echo "❌ Port $SERVER_PORT is already in use. Please choose a different port."
     continue
   fi
   break
