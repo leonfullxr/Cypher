@@ -3,11 +3,11 @@ const qrcode = require('qrcode');
 
 async function setup2FA (req, res) {
     try{
-        console.log("The req.user is : ", req.user);
+        // console.log("The req.user is : ", req.user);
         const user = req.user;
 
         var secret = speakeasy.generateSecret();
-        console.log("Secret object: ", secret);
+        // console.log("Secret object: ", secret);
         user.twoFactorSecret = secret.base32;
         await user.save();
 
