@@ -11,6 +11,7 @@ const setup2FA = require('../controller/setup2FA');
 const verify2FA = require('../controller/verify2FA');
 const reset2FA = require('../controller/reset2FA');
 const authenticateJWT = require('../middleware/auth');
+const authWithGoogle = require('../controller/authWithGoogle');
 
 const router = express.Router();
 
@@ -36,5 +37,7 @@ router.post('/2fa/setup', authenticateJWT, setup2FA);
 router.post('/2fa/verify', authenticateJWT, verify2FA);
 // 2FA reset
 router.post('/2fa/reset', authenticateJWT, reset2FA);
+// Google auth
+router.post('/auth/google', authWithGoogle);
 
 module.exports = router;

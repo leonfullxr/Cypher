@@ -16,13 +16,13 @@ app.use(cookiesParser());
 
 const PORT = process.env.PORT;
 
+// api endpoints
+app.use('/api', router);
+
 app.get('/', (req, res) => {
     res.json({ 
         message: 'Server is running at ' + PORT 
 })});
-
-// api endpoints
-app.use('/api', router);
 
 connectDB().then(() => {
     server.listen(PORT, () => {
