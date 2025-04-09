@@ -12,7 +12,10 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'Please provide a password']
+        required: function () {
+            // Only require password if user is not signing in with Google
+            return !this.googleId;
+          },
     },
     profile_pic: {
         type: String,
@@ -32,6 +35,11 @@ const userSchema = new mongoose.Schema({
     },
     twoFactorSecret: {
         type: String,
+    },
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true,
     },
 }, { 
     timestamps: true 
