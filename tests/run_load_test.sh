@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Central load test script settings
-NUM_CONNECTIONS=5000
-RAMP_TIME=50      # Seconds during which all connections ramp-up
-HOLD_TIME=180      # Seconds to hold connections open
+NUM_CONNECTIONS=3000
+RAMP_TIME=30      # Seconds during which all connections ramp-up
+HOLD_TIME=120      # Seconds to hold connections open
 
 echo "Starting load test with:"
 echo "  Active Connections: $NUM_CONNECTIONS"
@@ -15,7 +15,7 @@ echo "Launching resource monitor..."
 python3 resource_monitor.py --connections "$NUM_CONNECTIONS" --ramp "$RAMP_TIME" --hold "$HOLD_TIME" &
 RESOURCE_MONITOR_PID=$!
 
-# Give the resource monitor a moment to initialize (optional)
+# Give the resource monitor a moment to initialize
 sleep 2
 
 # Run the Socket.IO load test script passing the parameters

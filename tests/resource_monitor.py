@@ -85,7 +85,13 @@ def update(frame):
     ax_net.legend(loc='upper left', fontsize=10)
 
 
+def on_close(event):
+    print("Figure closed. Saving final graph to resource_monitor_final.png")
+    fig.savefig("resource_monitor_final.png", dpi=300)
+
+fig.canvas.mpl_connect("close_event", on_close)
 
 # Create animation that updates the plots every 1000 ms (1 second)
 ani = animation.FuncAnimation(fig, update, interval=1000)
 plt.show()
+fig.savefig("resource_monitor_final.png", dpi=300)
