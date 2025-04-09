@@ -3,7 +3,7 @@
 # Central load test script settings
 NUM_CONNECTIONS=3000
 RAMP_TIME=30      # Seconds during which all connections ramp-up
-HOLD_TIME=120      # Seconds to hold connections open
+HOLD_TIME=70      # Seconds to hold connections open
 
 echo "Starting load test with:"
 echo "  Active Connections: $NUM_CONNECTIONS"
