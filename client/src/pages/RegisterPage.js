@@ -6,6 +6,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import CryptoJS from "crypto-js";
 import JSEncrypt from "jsencrypt"; // Using jsencrypt to generate RSA key pairs in the browser
+import GoogleLoginButton from "../components/GoogleLoginButton";
+import { useDispatch } from "react-redux";
 
 const RegisterPage = () => {
     const [data, setData] = useState({
@@ -19,6 +21,7 @@ const RegisterPage = () => {
     });
     const [uploadPhoto, setUploadPhoto] = useState("");
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleOnChange = (e) => {
         const { name, value } = e.target;
@@ -226,6 +229,10 @@ const RegisterPage = () => {
                     <button className="bg-secondary txt-lg px-4 py-1 hover:bg-primary rounded mt-2 font-bold text-white leading-relaxed tracking-wide">
                         Register
                     </button>
+
+                    <div className="my-3 flex justify-center">
+                        <GoogleLoginButton dispatch={dispatch} />
+                    </div>
                 </form>
 
                 <p className="my-3 text-center">Already have an account ? <Link to={"/email"} className="hover:text-primary hover:underline font-semibold">Login</Link></p>

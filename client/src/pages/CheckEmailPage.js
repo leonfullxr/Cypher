@@ -3,12 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { PiUserCircle } from "react-icons/pi";
+import GoogleLoginButton from "../components/GoogleLoginButton";
+import { useDispatch } from "react-redux";
 
 const CheckEmailPage = () => {
     const [data, setData] = useState({
         email: ""
     });
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleOnChange = (e) => {
         const {name, value} = e.target;
@@ -75,6 +78,10 @@ const CheckEmailPage = () => {
                         Login
                     </button>
                 </form>
+
+                <div className="my-3 flex justify-center">
+                    <GoogleLoginButton dispatch={dispatch} />
+                </div>
 
                 <p className="my-3 text-center">New user ? <Link to={"/register"} className="hover:text-primary hover:underline font-semibold">Register</Link></p>
             </div>
