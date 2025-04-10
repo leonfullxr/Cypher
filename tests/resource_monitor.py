@@ -109,39 +109,33 @@ def update(frame):
     ax_mem.grid(True, linestyle="--", alpha=0.5)
     ax_mem.legend(loc='upper left', fontsize=10)
 
-    # Plot Network throughput with area filling
-    ax_net.plot(times, smoothed_net_sent, label="Upload (KB/s)", color='green', lw=2)
-    ax_net.fill_between(times, smoothed_net_sent, 0, color='green', alpha=0.3)
-    ax_net.plot(times, smoothed_net_recv, label="Download (KB/s)", color='red', lw=2)
-    ax_net.fill_between(times, smoothed_net_recv, 0, color='red', alpha=0.3)
+    # Plot Network throughput with Gaussian smoothing
+    ax_net.plot(times, smooth(net_sent, sigma=2), label="Upload (KB/s)", color='green', lw=2)
+    ax_net.fill_between(times, smooth(net_sent, sigma=2), 0, color='green', alpha=0.3)
+    ax_net.plot(times, smooth(net_recv, sigma=2), label="Download (KB/s)", color='red', lw=2)
+    ax_net.fill_between(times, smooth(net_recv, sigma=2), 0, color='red', alpha=0.3)
     ax_net.set_title("Real-Time Network Usage", fontsize=14)
     ax_net.set_xlabel("Time (seconds)", fontsize=12)
     ax_net.set_ylabel("Throughput (KB/s)", fontsize=12)
     ax_net.grid(True, linestyle="--", alpha=0.5)
     ax_net.legend(loc='upper left', fontsize=10)
 
-    # Add vertical lines and annotations:
+    # Add vertical breakpoint lines and annotations (as in your code)
     for ax in (ax_cpu, ax_mem, ax_net):
-        # (Optional: line at time 0)
         ax.axvline(x=0, color='purple', linestyle='--', lw=1.5)
-        # Vertical line for test start at baseline_delay
-        ax.axvline(x=baseline_delay, color='yellow', linestyle='--', lw=1.5)
-        # Vertical line for test end at (ramp_time + hold_time)
         ax.axvline(x=(ramp_time + hold_time), color='red', linestyle='--', lw=1.5)
-
-    # Annotate on the CPU subplot for clarity:
     ylim_cpu = ax_cpu.get_ylim()
-    ax_cpu.annotate("First Connection", 
-                    xy=(baseline_delay, ylim_cpu[1]), 
+    ax_cpu.annotate("First Connection", xy=(baseline_delay, ylim_cpu[1]),
                     xytext=(baseline_delay+5, ylim_cpu[1]-10),
                     arrowprops=dict(arrowstyle="->", color="yellow"),
                     fontsize=10, color="yellow")
-    ax_cpu.annotate("Test End", 
-                    xy=((ramp_time + hold_time), ylim_cpu[0]), 
+    ax_cpu.annotate("Test End", xy=((ramp_time + hold_time), ylim_cpu[0]),
                     xytext=((ramp_time + hold_time)-20, ylim_cpu[0]+10),
                     arrowprops=dict(arrowstyle="->", color="red"),
                     fontsize=10, color="red")
-
+    # Check if the monitoring period is over (add a 2-second buffer)
+    if current_time >= (ramp_time + hold_time + 2):
+        plt.close(fig)
 
 # Callback function to save the final graph when the figure is closed
 def on_close(event):
