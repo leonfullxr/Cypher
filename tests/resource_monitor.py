@@ -54,6 +54,9 @@ def smooth(data, sigma=2):
     return gaussian_filter1d(np.array(data), sigma=sigma)
 
 def update(frame):
+    # Check if the figure is still open, if not, just return
+    if not plt.fignum_exists(fig.number):
+        return
     global net_io_prev
 
     # Calculate active connections on port 9996 in ESTABLISHED state
@@ -109,7 +112,7 @@ def update(frame):
     ax_mem.grid(True, linestyle="--", alpha=0.5)
     ax_mem.legend(loc='upper left', fontsize=10)
 
-    # Plot Network throughput with Gaussian smoothing
+    # Plot Network throughput with area filling
     ax_net.plot(times, smooth(net_sent, sigma=2), label="Upload (KB/s)", color='green', lw=2)
     ax_net.fill_between(times, smooth(net_sent, sigma=2), 0, color='green', alpha=0.3)
     ax_net.plot(times, smooth(net_recv, sigma=2), label="Download (KB/s)", color='red', lw=2)
@@ -120,9 +123,9 @@ def update(frame):
     ax_net.grid(True, linestyle="--", alpha=0.5)
     ax_net.legend(loc='upper left', fontsize=10)
 
-    # Add vertical breakpoint lines and annotations (as in your code)
+        # Add vertical breakpoint lines and annotations:
     for ax in (ax_cpu, ax_mem, ax_net):
-        ax.axvline(x=0, color='purple', linestyle='--', lw=1.5)
+        ax.axvline(x=baseline_delay, color='purple', linestyle='--', lw=1.5)
         ax.axvline(x=(ramp_time + hold_time), color='red', linestyle='--', lw=1.5)
     ylim_cpu = ax_cpu.get_ylim()
     ax_cpu.annotate("First Connection", xy=(baseline_delay, ylim_cpu[1]),
@@ -133,9 +136,12 @@ def update(frame):
                     xytext=((ramp_time + hold_time)-20, ylim_cpu[0]+10),
                     arrowprops=dict(arrowstyle="->", color="red"),
                     fontsize=10, color="red")
-    # Check if the monitoring period is over (add a 2-second buffer)
+
+    # Automatically close figure after monitoring period is over (baseline_delay included if desired)
     if current_time >= (ramp_time + hold_time + 2):
+        ani.event_source.stop()
         plt.close(fig)
+
 
 # Callback function to save the final graph when the figure is closed
 def on_close(event):
@@ -145,6 +151,5 @@ def on_close(event):
 fig.canvas.mpl_connect("close_event", on_close)
 
 ani = animation.FuncAnimation(fig, update, interval=1000)
-
-# Start the event loop (blocking)
 plt.show()
+
