@@ -229,4 +229,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 
-For inquiries or support, reach out to us at [admin@leonfuller.space](mailto:admin@leonfuller.space).
+For inquiries or support, reach out to us at [admin@leonfuller.com](mailto:admin@leonfuller.com).
